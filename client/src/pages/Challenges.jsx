@@ -1,0 +1,189 @@
+import { useState, useEffect } from 'react';
+import ChallengeCard from '../components/ChallengeCard';
+import ChallengeRoulette from '../components/ChallengeRoulette';
+import { useAuth } from '../context/AuthContext';
+import toast from 'react-hot-toast';
+import api from '../utils/api';
+
+export default function Challenges() {
+  const [challenges, setChallenges] = useState([]);
+  const [myChallenges, setMyChallenges] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [spinning, setSpinning] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [resultChallenge, setResultChallenge] = useState(null);
+  const { user } = useAuth();
+
+  useEffect(() => {
+    fetchChallenges();
+    if (user) fetchMyChallenges();
+  }, [user, selectedCategory]);
+
+  const fetchChallenges = async () => {
+    try {
+      const url = selectedCategory ? `/api/challenges?category=${selectedCategory}` : '/api/challenges';
+      const res = await fetch(url);
+      if (res.ok) {
+        const data = await res.json();
+        setChallenges(data.data || []);
+      }
+    } catch (e) {
+      console.error('Failed to fetch challenges:', e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchMyChallenges = async () => {
+    try {
+      const { data } = await api.get('/api/challenges/my-challenges');
+      setMyChallenges(data.data || []);
+    } catch (e) {
+      console.error('Failed to fetch my challenges:', e);
+    }
+  };
+
+  const handleAccept = async (challengeId) => {
+    try {
+      await api.post(`/api/challenges/${challengeId}/accept`);
+      toast.success('Challenge accepted! 🎉');
+      fetchMyChallenges();
+    } catch (err) {
+      toast.error(err.response?.data?.error || err.message || 'Failed to accept challenge');
+    }
+  };
+
+  const handleSpin = async () => {
+    setSpinning(true);
+    setResultChallenge(null);
+    try {
+      const { data } = await api.get('/api/challenges/random');
+      setResultChallenge(data.challenge);
+      setSpinning(false);
+      await handleAccept(data.challenge.id);
+    } catch (e) {
+      setSpinning(false);
+      toast.error('Failed to get random challenge');
+    }
+  };
+
+  const categories = ['beginner', 'style', 'social', 'travel'];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">Challenges</h1>
+        <p className="mt-1 text-gray-600">Spin the roulette and complete challenges to earn points</p>
+      </div>
+
+      {/* Roulette Section */}
+      <div className="mb-12">
+        <ChallengeRoulette
+          challenges={challenges}
+          onSpin={handleSpin}
+          spinning={spinning}
+          resultChallenge={resultChallenge}
+        />
+      </div>
+
+      {/* My Challenges */}
+      {myChallenges.length > 0 && (
+        <div className="mb-12">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">My Challenges</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {myChallenges.map((uc) => (
+              <div key={uc.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+                <div className="flex items-start justify-between mb-3">
+                  <h3 className="text-lg font-bold text-gray-900">{uc.title}</h3>
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    uc.status === 'completed' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'
+                  }`}>
+                    {uc.status}
+                  </span>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">{uc.description}</p>
+                <div className="flex items-center justify-between">
+                  <span className="text-sm font-medium text-primary-600">+{uc.points} points</span>
+                  {uc.status === 'pending' && (
+                    <CompleteChallengeButton userChallenge={uc} onComplete={fetchMyChallenges} />
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* All Challenges */}
+      <div>
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-gray-900">All Challenges</h2>
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {challenges.map((challenge) => (
+              <ChallengeCard
+                key={challenge.id}
+                challenge={challenge}
+                onAccept={handleAccept}
+                accepted={myChallenges.some((uc) => uc.challenge_id === challenge.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CompleteChallengeButton({ userChallenge, onComplete }) {
+  const [showModal, setShowModal] = useState(false);
+
+  const handleSubmit = async ({ proof_image_url, review }) => {
+    try {
+      await api.post(`/api/challenges/${userChallenge.challenge_id}/complete`, {
+        proof_image_url,
+        review,
+        brewery_id: review?.brewery_id,
+      });
+      toast.success('Challenge completed! 🎉');
+      setShowModal(false);
+      onComplete();
+    } catch (err) {
+      toast.error(err.response?.data?.error || err.message || 'Failed to complete challenge');
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setShowModal(true)}
+        className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors"
+      >
+        Complete
+      </button>
+      {showModal && (
+        <ChallengeCompletionModal
+          challenge={userChallenge}
+          onClose={() => setShowModal(false)}
+          onSubmit={handleSubmit}
+        />
+      )}
+    </>
+  );
+}
