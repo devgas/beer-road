@@ -1,7 +1,6 @@
 export default function ReviewStars({ rating = 0 }) {
   const safeRating = typeof rating === 'number' ? rating : parseFloat(rating) || 0;
   const fullStars = Math.floor(safeRating);
-  const hasHalfStar = safeRating - fullStars >= 0.5;
 
   if (safeRating === 0) {
     return (
@@ -20,7 +19,7 @@ export default function ReviewStars({ rating = 0 }) {
       {[...Array(5)].map((_, i) => (
         <svg
           key={i}
-          className={`w-4 h-4 ${i < fullStars ? 'text-amber-400' : i === fullStars && hasHalfStar ? 'text-amber-400' : 'text-gray-300'}`}
+          className={`w-4 h-4 ${i < fullStars ? 'text-amber-400' : 'text-gray-300'}`}
           fill="currentColor"
           viewBox="0 0 20 20"
         >

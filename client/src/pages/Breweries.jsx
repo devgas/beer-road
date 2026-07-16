@@ -187,24 +187,42 @@ export default function Breweries() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           {error}
+          <button onClick={() => window.location.reload()} className="ml-auto text-sm font-medium bg-red-100 hover:bg-red-200 px-3 py-1 rounded-lg transition-colors">
+            Retry
+          </button>
         </div>
       )}
 
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="h-52 bg-gray-200 animate-pulse" />
+              <div className="p-5 space-y-3">
+                <div className="h-5 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse" />
+                <div className="flex gap-2">
+                  <div className="h-6 bg-gray-200 rounded w-16 animate-pulse" />
+                  <div className="h-6 bg-gray-200 rounded w-12 animate-pulse" />
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
       ) : (
         <>
           {breweries.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-              <div className="text-6xl mb-4">🍺</div>
-              <p className="text-gray-500 text-lg mb-4">No breweries found matching your criteria.</p>
+              <div className="text-7xl mb-4">🍺</div>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">No breweries found</h3>
+              <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                We couldn't find any breweries matching your criteria. Try adjusting your filters or search terms.
+              </p>
               <button
                 onClick={clearFilters}
-                className="text-primary-600 hover:text-primary-700 font-medium"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-all hover:shadow-lg"
               >
-                Clear filters
+                Clear all filters
               </button>
             </div>
           ) : (

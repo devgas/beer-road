@@ -5,7 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const path = require('path');
 
-const { initializeDatabase } = require('./database/db');
+const { initializeDatabase, db } = require('./database/db');
 const authRoutes = require('./routes/auth');
 const breweryRoutes = require('./routes/breweries');
 const tripRoutes = require('./routes/trips');
@@ -30,6 +30,19 @@ app.use(express.urlencoded({ extended: true }));
 // --- Health check ---
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// --- Aggregate dashboard stats ---
+app.get('/api/stats', async (req, res, next) => {
+  try {
+    const { count: breweries } = await db.prepare('SELECT COUNT(*) AS count FROM breweries').get();
+    const { count: trips } = await db.prepare('SELECT COUNT(*) AS count FROM trips').get();
+    const { count: users } = await db.prepare('SELECT COUNT(*) AS count FROM users').get();
+    const { count: reviews } = await db.prepare('SELECT COUNT(*) AS count FROM reviews').get();
+    res.json({ breweries, trips, users, reviews });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // --- API routes ---
@@ -62,6 +75,8 @@ async function start() {
   }
 }
 
-start();
+if (require.main === module) {
+  start();
+}
 
 module.exports = app;

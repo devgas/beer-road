@@ -6,6 +6,22 @@ import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 
+const BREWERY_IMAGES = [
+  '1535958636474', '1535958636475', '1535958636476', '1535958636477', '1535958636478',
+  '1535958636479', '1535958636480', '1535958636481', '1535958636482', '1535958636483',
+  '1535958636484', '1535958636485', '1535958636486', '1535958636487', '1535958636488',
+  '1535958636489', '1535958636490', '1535958636491', '1535958636492', '1535958636493',
+];
+
+function getBreweryImageId(breweryId) {
+  let hash = 0;
+  const str = String(breweryId);
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  return BREWERY_IMAGES[Math.abs(hash) % BREWERY_IMAGES.length];
+}
+
 export default function BreweryDetail() {
   const { id } = useParams();
   const [brewery, setBrewery] = useState(null);
@@ -19,12 +35,15 @@ export default function BreweryDetail() {
   const [showTripDropdown, setShowTripDropdown] = useState(false);
   const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
   const [submittingReview, setSubmittingReview] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const { user } = useAuth();
+  const imageId = brewery ? getBreweryImageId(brewery.id) : '1535958636474';
 
   useEffect(() => {
     const fetchBrewery = async () => {
       setLoading(true);
       setError(null);
+      setImgError(false);
       try {
         const res = await fetch(`/api/breweries/${id}`);
         if (!res.ok) throw new Error('Brewery not found');
@@ -143,7 +162,14 @@ export default function BreweryDetail() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <Link to="/breweries" className="hover:text-primary-600 transition-colors">Breweries</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <span className="text-gray-900 font-medium">Loading...</span>
+        </nav>
         <div className="animate-pulse space-y-4">
           <div className="h-6 bg-gray-200 rounded w-32" />
           <div className="h-10 bg-gray-200 rounded w-3/4" />
@@ -155,10 +181,20 @@ export default function BreweryDetail() {
 
   if (error || !brewery) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <Link to="/breweries" className="hover:text-primary-600 transition-colors">Breweries</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <span className="text-gray-900 font-medium">Brewery</span>
+        </nav>
+        <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
           <div className="text-6xl mb-4">😕</div>
           <p className="text-gray-500 text-lg mb-4">{error || 'Brewery not found'}</p>
+          <button onClick={() => window.location.reload()} className="text-primary-600 hover:text-primary-700 font-medium mr-4">
+            Try again
+          </button>
           <Link to="/breweries" className="text-primary-600 hover:text-primary-700 font-medium">
             Back to Breweries
           </Link>
@@ -173,16 +209,27 @@ export default function BreweryDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
-      <Link to="/breweries" className="inline-flex items-center gap-1 text-primary-600 hover:text-primary-700 font-medium mb-6 group">
-        <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        Back to Breweries
-      </Link>
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
+        <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <Link to="/breweries" className="hover:text-primary-600 transition-colors">Breweries</Link>
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <span className="text-gray-900 font-medium truncate">{brewery.name}</span>
+      </nav>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8">
-        <div className="relative h-72 md:h-80 bg-gradient-to-br from-amber-100 via-orange-50 to-yellow-50 flex items-center justify-center">
-          <span className="text-8xl">🍺</span>
+        <div className="relative h-72 md:h-80 bg-gray-100 flex items-center justify-center">
+          {!imgError ? (
+            <img
+              src={`https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
+              alt={brewery.name}
+              loading="lazy"
+              onError={() => setImgError(true)}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-8xl">🍺</span>
+          )}
           {brewery.type && (
             <span className="absolute top-6 left-6 px-3 py-1.5 bg-white/90 backdrop-blur-sm text-amber-800 rounded-full text-sm font-semibold shadow-sm">
               {brewery.type}
@@ -414,7 +461,10 @@ function BeersSection({ breweryId }) {
     return (
       <div className="mb-8">
         <h2 className="text-xl font-semibold text-gray-900 mb-4">Beers</h2>
-        <p className="text-gray-500">No beers listed for this brewery yet.</p>
+        <div className="text-center py-8 bg-gray-50 rounded-xl border border-gray-100">
+          <div className="text-4xl mb-2">🍻</div>
+          <p className="text-gray-500">No beers listed for this brewery yet.</p>
+        </div>
       </div>
     );
   }

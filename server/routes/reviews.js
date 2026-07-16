@@ -94,4 +94,24 @@ router.post('/', auth, async (req, res, next) => {
   }
 });
 
+/**
+ * GET /api/reviews
+ * Returns all reviews with author name, newest first.
+ */
+router.get('/', async (req, res, next) => {
+  try {
+    const rows = await db
+      .prepare(
+        `SELECT r.*, u.name AS author_name
+         FROM reviews r
+         JOIN users u ON u.id = r.user_id
+         ORDER BY r.created_at DESC`
+      )
+      .all();
+    res.json({ data: rows, total: rows.length });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

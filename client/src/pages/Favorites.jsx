@@ -16,7 +16,7 @@ export default function Favorites() {
         const res = await fetch('/api/favorites');
         if (res.ok) {
           const data = await res.json();
-          setFavorites(data);
+          setFavorites(data.data || data);
         }
       } catch (e) {
         console.error('Failed to fetch favorites:', e);
@@ -42,11 +42,16 @@ export default function Favorites() {
   if (!user) {
     return (
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <span className="text-gray-900 font-medium">Favorites</span>
+        </nav>
         <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
           <div className="text-6xl mb-4">❤️</div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">Login to view favorites</h3>
           <p className="text-gray-500 mb-6">Save your favorite breweries and access them anytime.</p>
-          <Link to="/login" className="text-primary-600 hover:text-primary-700 font-medium">
+          <Link to="/login" className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-all hover:shadow-lg">
             Login to your account
           </Link>
         </div>
@@ -56,6 +61,12 @@ export default function Favorites() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <span className="text-gray-900 font-medium">Favorites</span>
+      </nav>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">My Favorites</h1>
         <p className="mt-1 text-gray-600">
@@ -64,12 +75,20 @@ export default function Favorites() {
       </div>
 
       {loading ? (
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="h-52 bg-gray-200 animate-pulse" />
+              <div className="p-5 space-y-3">
+                <div className="h-5 bg-gray-200 rounded animate-pulse" />
+                <div className="h-4 bg-gray-200 rounded w-2/3 animate-pulse" />
+              </div>
+            </div>
+          ))}
         </div>
       ) : favorites.length === 0 ? (
         <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-          <div className="text-6xl mb-4">❤️</div>
+          <div className="text-7xl mb-4">❤️</div>
           <h3 className="text-xl font-semibold text-gray-900 mb-2">No favorites yet</h3>
           <p className="text-gray-500 mb-6 max-w-md mx-auto">
             Start exploring breweries and save your favorites to build your personal beer bucket list.

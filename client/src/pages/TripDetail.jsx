@@ -98,7 +98,7 @@ export default function TripDetail() {
       const res = await fetch(`/api/trips/${id}/stops`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ breweryId: brewery.id, name: brewery.name, city: brewery.city, state: brewery.state, latitude: brewery.latitude || brewery.lat, longitude: brewery.longitude || brewery.lng }),
+        body: JSON.stringify({ breweryId: brewery.id }),
       });
       if (!res.ok) throw new Error('Failed to add stop');
       const data = await res.json();
@@ -159,11 +159,18 @@ export default function TripDetail() {
 
   if (loading) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          <div className="h-4 bg-gray-200 rounded w-16 animate-pulse" />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <div className="h-4 bg-gray-200 rounded w-32 animate-pulse" />
+        </nav>
         <div className="animate-pulse space-y-4">
-          <div className="h-6 bg-gray-200 rounded w-32" />
           <div className="h-10 bg-gray-200 rounded w-3/4" />
           <div className="h-64 bg-gray-200 rounded-xl" />
+          <div className="h-40 bg-gray-200 rounded-xl" />
         </div>
       </div>
     );
@@ -171,13 +178,25 @@ export default function TripDetail() {
 
   if (error || !trip) {
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="text-center py-20">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+        <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+          <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <Link to="/trips" className="hover:text-primary-600 transition-colors">Trips</Link>
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+          <span className="text-gray-900 font-medium">Trip</span>
+        </nav>
+        <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
           <div className="text-6xl mb-4">😕</div>
-          <p className="text-gray-500 text-lg mb-4">{error || 'Trip not found'}</p>
-          <Link to="/trips" className="text-primary-600 hover:text-primary-700 font-medium">
-            Back to Trips
-          </Link>
+          <p className="text-red-600 text-lg mb-4">{error || 'Trip not found'}</p>
+          <div className="flex items-center justify-center gap-4">
+            <button onClick={() => window.location.reload()} className="text-primary-600 hover:text-primary-700 font-medium">
+              Try again
+            </button>
+            <Link to="/trips" className="text-primary-600 hover:text-primary-700 font-medium">
+              Back to Trips
+            </Link>
+          </div>
         </div>
       </div>
     );
@@ -191,13 +210,16 @@ export default function TripDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
+        <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <Link to="/trips" className="hover:text-primary-600 transition-colors">Trips</Link>
+        <svg className="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <span className="text-gray-900 font-medium truncate">{trip.name || trip.title}</span>
+      </nav>
+
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
-        <Link to="/trips" className="text-primary-600 hover:text-primary-700 font-medium inline-flex items-center gap-1 group">
-          <svg className="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Trips
-        </Link>
+        <div />
         <div className="flex gap-2">
           <button
             onClick={() => setIsEditing(!isEditing)}
@@ -359,7 +381,7 @@ export default function TripDetail() {
                     {index + 1}
                   </div>
                   <div>
-                    <Link to={`/breweries/${stop.breweryId || stop.id}`} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors">
+                    <Link to={`/breweries/${stop.brewery_id || stop.id}`} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors">
                       {stop.name}
                     </Link>
                     <p className="text-sm text-gray-500">{stop.city}{stop.state ? `, ${stop.state}` : ''}</p>
@@ -401,8 +423,19 @@ export default function TripDetail() {
           </div>
         ) : (
           <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-            <div className="text-4xl mb-3">📍</div>
-            <p className="text-gray-500">No stops yet. Add your first brewery!</p>
+            <div className="text-5xl mb-3">📍</div>
+            <p className="text-gray-500 mb-4">No stops yet. Add your first brewery to get started!</p>
+            {user && (
+              <button
+                onClick={() => setShowAddStop(true)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-all hover:shadow-lg"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                </svg>
+                Add Stop
+              </button>
+            )}
           </div>
         )}
       </div>

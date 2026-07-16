@@ -131,11 +131,33 @@ export default function Challenges() {
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-500"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="h-40 bg-gray-200 animate-pulse" />
+                <div className="p-5 space-y-3">
+                  <div className="h-5 bg-gray-200 rounded animate-pulse w-3/4" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse" />
+                  <div className="h-4 bg-gray-200 rounded animate-pulse w-1/2" />
+                  <div className="flex justify-between items-center pt-2">
+                    <div className="h-6 bg-gray-200 rounded w-20 animate-pulse" />
+                    <div className="h-9 bg-gray-200 rounded w-24 animate-pulse" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {challenges.length === 0 && (
+              <div className="col-span-full text-center py-20 bg-white rounded-2xl border border-gray-100">
+                <div className="text-7xl mb-4">🎯</div>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">No challenges yet</h3>
+                <p className="text-gray-500 mb-6 max-w-md mx-auto">
+                  Challenges are being loaded. Check back soon for new brewery challenges!
+                </p>
+              </div>
+            )}
             {challenges.map((challenge) => (
               <ChallengeCard
                 key={challenge.id}

@@ -245,4 +245,41 @@ router.delete('/:id/stops/:stopId', async (req, res, next) => {
   }
 });
 
+/**
+ * PUT /api/trips/:id/stops/reorder
+ * Body: { stops: [stopId1, stopId2, ...] }
+ * Updates stop_order for each stop based on the array position.
+ */
+router.put('/:id/stops/reorder', async (req, res, next) => {
+  try {
+    const trip = await db
+      .prepare('SELECT id FROM trips WHERE id = ? AND user_id = ?')
+      .get(req.params.id, req.user.id);
+    if (!trip) {
+      const err = new Error('Trip not found');
+      err.status = 404;
+      throw err;
+    }
+
+    const { stops } = req.body;
+    if (!Array.isArray(stops)) {
+      const err = new Error('stops must be an array of stop IDs');
+      err.status = 400;
+      throw err;
+    }
+
+    const updateStmt = db.prepare(
+      'UPDATE trip_stops SET stop_order = ? WHERE id = ? AND trip_id = ?'
+    );
+
+    for (let i = 0; i < stops.length; i++) {
+      await updateStmt.run(i, stops[i], req.params.id);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

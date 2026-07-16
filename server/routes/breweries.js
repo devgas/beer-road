@@ -223,4 +223,20 @@ router.get('/country/:countryName', async (req, res, next) => {
   }
 });
 
+/**
+ * GET /api/stats
+ * Returns aggregate counts for the dashboard.
+ */
+router.get('/stats', async (req, res, next) => {
+  try {
+    const { count: breweries } = await db.prepare('SELECT COUNT(*) AS count FROM breweries').get();
+    const { count: trips } = await db.prepare('SELECT COUNT(*) AS count FROM trips').get();
+    const { count: users } = await db.prepare('SELECT COUNT(*) AS count FROM users').get();
+    const { count: reviews } = await db.prepare('SELECT COUNT(*) AS count FROM reviews').get();
+    res.json({ breweries, trips, users, reviews });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

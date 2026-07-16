@@ -20,13 +20,13 @@ export default function Profile() {
           fetch('/api/favorites'),
           fetch('/api/reviews'),
         ]);
-        const trips = tripsRes.ok ? await tripsRes.json() : [];
-        const favs = favRes.ok ? await favRes.json() : [];
-        const reviews = reviewsRes.ok ? await reviewsRes.json() : [];
+        const trips = tripsRes.ok ? await tripsRes.json() : { data: [] };
+        const favs = favRes.ok ? await favRes.json() : { data: [] };
+        const reviews = reviewsRes.ok ? await reviewsRes.json() : { data: [], total: 0 };
         setStats({
-          trips: trips.trips?.length || trips.length || 0,
-          favorites: favs.length || 0,
-          reviews: Array.isArray(reviews) ? reviews.length : 0,
+          trips: trips.data?.length || 0,
+          favorites: favs.data?.length || 0,
+          reviews: reviews.total || 0,
         });
       } catch (e) {
         console.error('Failed to fetch stats:', e);
@@ -36,20 +36,7 @@ export default function Profile() {
   }, []);
 
   const handleSaveName = async () => {
-    setSaving(true);
-    try {
-      const res = await fetch('/api/auth/me', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name }),
-      });
-      if (!res.ok) throw new Error('Failed to update profile');
-      toast.success('Profile updated!');
-    } catch (err) {
-      toast.error(err.message || 'Failed to update profile');
-    } finally {
-      setSaving(false);
-    }
+    toast('Profile update coming soon');
   };
 
   if (!user) {
@@ -64,6 +51,12 @@ export default function Profile() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <span className="text-gray-900 font-medium">Profile</span>
+      </nav>
+
       <h1 className="text-3xl font-bold text-gray-900 mb-8">My Profile</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

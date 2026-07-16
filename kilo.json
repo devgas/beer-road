@@ -1,6 +1,22 @@
 {
   "$schema": "https://app.kilo.ai/config.json",
   "permission": {
-    "bash": "ask"
+    "bash": {
+      "ls *": "allow",
+      "rm *": "allow",
+      "git *": "allow",
+      "npm *": "allow",
+      "npx *": "allow",
+      "vercel *": "allow",
+      "node *": "allow",
+      "curl *": "allow",
+      "python3 *": "allow",
+      "pip3 *": "allow",
+      "sleep *": "allow",
+      "cat *": "allow",
+      "head *": "allow",
+      "tail *": "allow",
+      "mkdir *": "allow"
+    }
   }
 }

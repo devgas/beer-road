@@ -10,7 +10,8 @@
     "install:all": "npm install && cd client && npm install && cd ../server && npm install",
     "build": "cd client && npm run build",
     "start": "cd server && npm start",
-    "vercel-build": "cd client && npm install && npm run build && cd ../server && npm install"
+    "seed:sqlite": "node server/scripts/seed-sqlite.js",
+    "vercel-build": "node server/scripts/seed-sqlite.js && cd client && npm install && npm run build && cd ../server && npm install"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

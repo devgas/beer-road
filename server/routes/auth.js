@@ -97,4 +97,25 @@ router.get('/me', auth, async (req, res, next) => {
   }
 });
 
+/**
+ * PATCH /api/auth/me
+ * Body: { name }
+ * Updates the authenticated user's name.
+ */
+router.patch('/me', auth, async (req, res, next) => {
+  try {
+    const { name } = req.body;
+    await db.prepare('UPDATE users SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?').run(
+      name != null ? String(name).trim() : null,
+      req.user.id
+    );
+    const user = await db
+      .prepare('SELECT id, email, name, created_at FROM users WHERE id = ?')
+      .get(req.user.id);
+    res.json({ user });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

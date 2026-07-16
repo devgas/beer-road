@@ -48,6 +48,14 @@ export default function TripsNew() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
+      <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6">
+        <Link to="/" className="hover:text-primary-600 transition-colors">Home</Link>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <Link to="/trips" className="hover:text-primary-600 transition-colors">Trips</Link>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+        <span className="text-gray-900 font-medium">New Trip</span>
+      </nav>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Create New Trip</h1>
         <p className="mt-1 text-gray-600">Plan your next brewery adventure</p>
