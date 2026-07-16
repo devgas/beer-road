@@ -23,5 +23,5 @@
       "dest": "/index.html"
     }
   ],
-  "outputDirectory": "client/dist"
+  "outputDirectory": "dist"
 }
