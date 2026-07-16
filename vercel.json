@@ -10,5 +10,5 @@
       "dest": "/api/index.js"
     }
   ],
-  "outputDirectory": "server/public"
+  "outputDirectory": "public"
 }
