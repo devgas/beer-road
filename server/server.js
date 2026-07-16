@@ -55,7 +55,7 @@ app.use('/api/beers', beerRoutes);
 app.use('/api/challenges', challengeRoutes);
 
 // Serve a basic static client build if present (optional production asset).
-const publicDir = path.join(__dirname, '..', '..', 'client', 'public');
+const publicDir = path.join(__dirname, '..', '..', 'public');
 app.use(express.static(publicDir));
 
 // SPA fallback: serve index.html for any non-API, non-file request.
