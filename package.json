@@ -11,7 +11,7 @@
     "build": "cd client && npm run build",
     "start": "cd server && npm start",
     "seed:sqlite": "node server/scripts/seed-sqlite.js",
-    "vercel-build": "cd server && npm install && node scripts/seed-sqlite.js && cd ../client && npm install && npm run build"
+    "vercel-build": "cd server && npm install && node scripts/seed-sqlite.js && mkdir -p public && cd ../client && npm install && npm run build && cp -r dist ../server/public"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
