@@ -36,9 +36,12 @@ Thumbs.db
 .vercel/
 
 # Database
-*.db
 *.sqlite
 *.sqlite3
+*.db-shm
+*.db-wal
+server/database/beer-road.db
+!server/database/beer-road.db
 
 # Misc
 *.log
