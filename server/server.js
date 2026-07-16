@@ -55,27 +55,14 @@ app.use('/api/beers', beerRoutes);
 app.use('/api/challenges', challengeRoutes);
 
 // Serve a basic static client build if present (optional production asset).
-const publicDir = path.join(__dirname, '..', '..', 'public');
+const publicDir = path.join(__dirname, '..', '..', 'client', 'public');
 app.use(express.static(publicDir));
-
-const clientDistDir = path.join(__dirname, '..', 'client', 'dist');
-app.use(express.static(clientDistDir));
 
 // SPA fallback: serve index.html for any non-API, non-file request.
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api')) return next();
   const indexPath = path.join(publicDir, 'index.html');
-  const clientIndexPath = path.join(clientDistDir, 'index.html');
-  if (req.path === '/' || req.path === '') {
-    return res.sendFile(indexPath, (err) => {
-      if (!err) return;
-      return res.sendFile(clientIndexPath);
-    });
-  }
-  res.sendFile(indexPath, (err) => {
-    if (!err) return;
-    res.sendFile(clientIndexPath);
-  });
+  res.sendFile(indexPath);
 });
 
 // --- Error handling (must be last) ---
