@@ -58,6 +58,19 @@ app.use('/api/challenges', challengeRoutes);
 const publicDir = path.join(__dirname, '..', 'public');
 app.use(express.static(publicDir));
 
+const clientDistDir = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(clientDistDir));
+
+// SPA fallback: serve index.html for any non-API, non-file request.
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  const indexPath = path.join(clientDistDir, 'index.html');
+  if (req.path === '/' || req.path === '') {
+    return res.sendFile(indexPath);
+  }
+  res.sendFile(indexPath);
+});
+
 // --- Error handling (must be last) ---
 app.use(notFoundHandler);
 app.use(errorHandler);
