@@ -271,6 +271,13 @@ router.put('/:id', auth, async (req, res, next) => {
       await db.prepare(`UPDATE breweries SET ${sets.join(', ')} WHERE id = ?`).run(...params);
     }
 
+    const brewery = await db.prepare('SELECT * FROM breweries WHERE id = ?').get(req.params.id);
+    res.json({ brewery });
+  } catch (err) {
+    next(err);
+  }
+});
+
 /**
  * DELETE /api/breweries/:id
  * Protected: remove a brewery (cascades to linked beers, trips, favorites, reviews).
