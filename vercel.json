@@ -10,5 +10,11 @@
       "dest": "/index.html"
     }
   ],
-  "outputDirectory": "client/public"
+  "outputDirectory": "client/public",
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60,
+      "memory": 1024
+    }
+  }
 }
