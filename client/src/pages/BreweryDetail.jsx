@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import Map from '../components/Map';
 import ReviewStars from '../components/ReviewStars';
 import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../context/I18nContext';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
 import { breweryImageUrl } from '../utils/media';
@@ -22,6 +23,7 @@ export default function BreweryDetail() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [imgError, setImgError] = useState(false);
   const { user } = useAuth();
+  const { t } = useI18n();
 
   useEffect(() => {
     const fetchBrewery = async () => {
@@ -299,6 +301,18 @@ export default function BreweryDetail() {
                 )}
               </div>
             )}
+            <Link
+              to={`/beers/${brewery.id}/new`}
+              className="px-5 py-2.5 bg-amber-500 text-white rounded-xl font-medium hover:bg-amber-600 transition-colors"
+            >
+              + {t('addBeer')}
+            </Link>
+            <Link
+              to={`/breweries/${brewery.id}/edit`}
+              className="px-5 py-2.5 border border-gray-300 text-gray-700 rounded-xl font-medium hover:bg-gray-100 transition-colors"
+            >
+              {t('editBrewery')}
+            </Link>
           </div>
 
           {brewery.lat && brewery.lng && (

@@ -2,6 +2,7 @@
 
 const express = require('express');
 const { db } = require('../database/db');
+const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -72,6 +73,88 @@ router.get('/:id', async (req, res, next) => {
       err.status = 404;
       throw err;
     }
+    res.json({ beer });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * POST /api/beers
+ * Protected: create a beer for a brewery.
+ * Body: { brewery_id, name, style, abv, ibu, description, image_url }
+ */
+router.post('/', auth, async (req, res, next) => {
+  try {
+    const { brewery_id, name, style, abv, ibu, description, image_url } = req.body;
+    if (!brewery_id) {
+      const err = new Error('brewery_id is required');
+      err.status = 400;
+      throw err;
+    }
+    if (!name) {
+      const err = new Error('Beer name is required');
+      err.status = 400;
+      throw err;
+    }
+
+    const info = await db
+      .prepare(
+        `INSERT INTO beers (brewery_id, name, style, abv, ibu, description, image_url)
+         VALUES (?, ?, ?, ?, ?, ?, ?)`
+      )
+      .run(
+        brewery_id,
+        name,
+        style || null,
+        abv != null && abv !== '' ? Number(abv) : null,
+        ibu != null && ibu !== '' ? Number(ibu) : null,
+        description || null,
+        image_url || null
+      );
+
+    const beer = await db.prepare('SELECT * FROM beers WHERE id = ?').get(info.lastInsertRowid);
+    res.status(201).json({ beer });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
+ * PUT /api/beers/:id
+ * Protected: update an existing beer's fields.
+ */
+router.put('/:id', auth, async (req, res, next) => {
+  try {
+    const existing = await db.prepare('SELECT * FROM beers WHERE id = ?').get(req.params.id);
+    if (!existing) {
+      const err = new Error('Beer not found');
+      err.status = 404;
+      throw err;
+    }
+
+    const fields = ['brewery_id', 'name', 'style', 'abv', 'ibu', 'description', 'image_url'];
+    const sets = [];
+    const params = [];
+    for (const f of fields) {
+      if (req.body[f] !== undefined) {
+        sets.push(`${f} = ?`);
+        if (['abv', 'ibu'].includes(f)) {
+          params.push(req.body[f] != null && req.body[f] !== '' ? Number(req.body[f]) : null);
+        } else if (f === 'brewery_id') {
+          params.push(Number(req.body[f]));
+        } else {
+          params.push(req.body[f] === '' ? null : req.body[f]);
+        }
+      }
+    }
+
+    if (sets.length) {
+      params.push(req.params.id);
+      await db.prepare(`UPDATE beers SET ${sets.join(', ')} WHERE id = ?`).run(...params);
+    }
+
+    const beer = await db.prepare('SELECT * FROM beers WHERE id = ?').get(req.params.id);
     res.json({ beer });
   } catch (err) {
     next(err);

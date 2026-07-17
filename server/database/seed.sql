@@ -61,6 +61,40 @@ INSERT INTO beers (id, brewery_id, name, style, abv, ibu, description, image_url
 (11, 25, 'Lvivske 1715', 'Lager', 4.8, 28, 'Classic Ukrainian lager with a light golden color, gentle hop bitterness, and a clean finish.', '/images/beer-lager.jpg'),
 (12, 26, 'Obolon Premium', 'Lager', 5.2, 32, 'Ukraine''s flagship lager. Light, refreshing, and easy-drinking with subtle malt sweetness.', '/images/beer-lager.jpg');
 
+-- Expanded signature beers so every brewery detail page shows a beer list.
+INSERT INTO beers (id, brewery_id, name, style, abv, ibu, description, image_url) VALUES
+(13, 2, 'Rogue Dead Guy Ale', 'Maibock', 6.5, 40, 'Smooth, malty Maibock with a crisp finish and a cult following.', '/images/beer-lager.jpg'),
+(14, 3, 'Cascade Sang Royale', 'Sour', 8.0, 10, 'Blended barrel-aged sour cherry ale, tart and complex.', '/images/beer-sour.jpg'),
+(15, 4, 'Hair of the Dog Adam', 'Old Ale', 10.0, 50, 'Historic-style aged strong ale with deep malt and dark fruit.', '/images/beer-stout.jpg'),
+(16, 6, 'New Belgium Fat Tire', 'Ale', 5.2, 22, 'Balanced amber ale with toasted malt and a hint of fruit.', '/images/beer-lager.jpg'),
+(17, 7, 'Left Hand Milk Stout', 'Stout', 6.0, 25, 'Silky nitro milk stout with cocoa and coffee sweetness.', '/images/beer-stout.jpg'),
+(18, 8, 'Avery White Rascal', 'Witbier', 5.6, 20, 'Belgian-style white ale with coriander and orange peel.', '/images/beer-lager.jpg'),
+(19, 10, 'Ballast Point Sculpin', 'IPA', 7.0, 70, 'Bright, tropical IPA bursting with apricot and citrus.', '/images/beer-ipa.jpg'),
+(20, 11, 'Modern Times Fortunate Islands', 'IPA', 6.0, 45, 'Hazy IPA with wheat and a juicy tropical character.', '/images/beer-ipa.jpg'),
+(21, 12, 'Green Flash West Coast IPA', 'IPA', 7.3, 95, 'Resinous, bitter West Coast IPA with pine and grapefruit.', '/images/beer-ipa.jpg'),
+(22, 13, 'Wicked Weed Pernicious', 'IPA', 7.2, 70, 'Dank, citrusy IPA that became an Asheville staple.', '/images/beer-ipa.jpg'),
+(23, 14, 'Sierra Nevada Pale Ale', 'Pale Ale', 5.6, 38, 'The classic American pale ale with Cascade citrus-pine.', '/images/beer-ipa.jpg'),
+(24, 15, 'Hi-Wire Zirkusfest', 'Lager', 5.3, 22, 'Munich-style festbier lager, malty and smooth.', '/images/beer-lager.jpg'),
+(25, 17, 'Bell''s Two Hearted Ale', 'IPA', 7.0, 55, 'Celebrated Centennial IPA, piney and floral.', '/images/beer-ipa.jpg'),
+(26, 18, 'Dogfish Head 60 Minute IPA', 'IPA', 6.0, 60, 'Continuously hopped IPA with balanced bitterness.', '/images/beer-ipa.jpg'),
+(27, 19, 'The Alchemist Heady Topper', 'IPA', 8.0, 75, 'Legendary double IPA, best enjoyed fresh from the can.', '/images/beer-ipa.jpg'),
+(28, 21, 'Austin Beerworks Peacemaker', 'Ale', 5.0, 30, 'Easy-drinking anytime ale, a local Austin favorite.', '/images/beer-lager.jpg'),
+(29, 22, 'Jester King Atrial Rubicite', 'Sour', 7.0, 10, 'Barrel-aged sour ale with raspberry, funky and tart.', '/images/beer-sour.jpg'),
+(30, 23, 'Lagunitas IPA', 'IPA', 6.2, 65, 'Floral, citrusy IPA from the NorCal pioneers.', '/images/beer-ipa.jpg'),
+(31, 24, 'Brooklyn Lager', 'Lager', 5.2, 33, 'Vienna-style amber lager, malty with noble hops.', '/images/beer-lager.jpg'),
+(32, 27, 'Chernihivske Svitle', 'Lager', 4.8, 25, 'Clean Ukrainian pale lager with a soft malt body.', '/images/beer-lager.jpg'),
+(33, 28, 'Slavutych Pshenychne', 'Wheat', 5.0, 18, 'Crisp Ukrainian wheat beer with light citrus notes.', '/images/beer-lager.jpg'),
+(34, 29, 'Yantar Yantarne', 'Lager', 4.7, 22, 'Amber-hued Baltic lager, gently sweet and smooth.', '/images/beer-lager.jpg'),
+(35, 30, 'Zhiguli Svitle', 'Lager', 4.5, 20, 'Traditional golden lager with a clean, malty finish.', '/images/beer-lager.jpg'),
+(36, 31, 'Rogozhanska Bereza Saison', 'Saison', 6.0, 28, 'Farmhouse saison brewed with local grain and yeast.', '/images/beer-saison.jpg'),
+(37, 32, 'Dnipro Zolote', 'Lager', 4.6, 22, 'Golden river lager for eastern Ukraine markets.', '/images/beer-lager.jpg'),
+(38, 35, 'Staropramen Lezákk', 'Lager', 5.0, 30, 'Prague''s clean, balanced draught lager.', '/images/beer-lager.jpg'),
+(39, 36, 'Kozel Svetly', 'Lager', 4.0, 20, 'Smooth, malty Czech pale lager with a creamy head.', '/images/beer-lager.jpg'),
+(40, 37, 'Krusovice Imperial', 'Lager', 4.8, 22, 'Royal brewery pale lager, crisp and approachable.', '/images/beer-lager.jpg'),
+(41, 38, 'Radegast Original', 'Pilsner', 4.9, 38, 'Moravian pilsner with a firm noble-hop bite.', '/images/beer-pilsner.jpg'),
+(42, 39, 'Starobrno Drak', 'Lager', 5.0, 28, 'Brno draught lager, malty and easy-going.', '/images/beer-lager.jpg'),
+(43, 40, 'Matuška Raptor', 'IPA', 7.0, 65, 'Hop-forward Czech craft IPA, bold and resinous.', '/images/beer-ipa.jpg');
+
 INSERT INTO challenges (id, title, description, difficulty, points, category, image_url) VALUES
 (1, 'First Sip', 'Visit your first brewery and try a local beer', 'easy', 10, 'beginner', '/images/challenge-beginner.jpg'),
 (2, 'IPA Explorer', 'Try an IPA at 3 different breweries', 'medium', 25, 'style', '/images/challenge-style.jpg'),

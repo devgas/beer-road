@@ -239,4 +239,43 @@ router.post('/', auth, async (req, res, next) => {
   }
 });
 
+/**
+ * PUT /api/breweries/:id
+ * Protected: update an existing brewery's fields.
+ */
+router.put('/:id', auth, async (req, res, next) => {
+  try {
+    const existing = await db.prepare('SELECT * FROM breweries WHERE id = ?').get(req.params.id);
+    if (!existing) {
+      const err = new Error('Brewery not found');
+      err.status = 404;
+      throw err;
+    }
+
+    const fields = ['name', 'address', 'city', 'state', 'country', 'lat', 'lng', 'website', 'phone', 'description', 'type'];
+    const sets = [];
+    const params = [];
+    for (const f of fields) {
+      if (req.body[f] !== undefined) {
+        sets.push(`${f} = ?`);
+        if (['lat', 'lng'].includes(f)) {
+          params.push(req.body[f] != null && req.body[f] !== '' ? Number(req.body[f]) : null);
+        } else {
+          params.push(req.body[f] === '' ? null : req.body[f]);
+        }
+      }
+    }
+
+    if (sets.length) {
+      params.push(req.params.id);
+      await db.prepare(`UPDATE breweries SET ${sets.join(', ')} WHERE id = ?`).run(...params);
+    }
+
+    const brewery = await db.prepare('SELECT * FROM breweries WHERE id = ?').get(req.params.id);
+    res.json({ brewery });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;

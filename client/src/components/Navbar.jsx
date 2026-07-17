@@ -76,6 +76,9 @@ export default function Navbar() {
                 <Link to="/profile" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/profile')}`}>
                   {t('navProfile')}
                 </Link>
+                <Link to="/breweries/new" className="px-3 py-2 rounded-lg text-sm text-primary-100 hover:text-white transition-colors">
+                  {t('addBrewery')}
+                </Link>
                 <div className="w-px h-6 bg-primary-400 mx-2" />
                 <span className="text-primary-200 text-sm px-2">{user.name}</span>
                 <button
@@ -135,6 +138,7 @@ export default function Navbar() {
               <Link to="/trips" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navTrips')}</Link>
               <Link to="/favorites" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navFavorites')}</Link>
               <Link to="/profile" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navProfile')}</Link>
+              <Link to="/breweries/new" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors font-medium">{t('addBrewery')}</Link>
               <div className="pt-2 mt-2 border-t border-primary-400/30">
                 <p className="px-3 text-sm text-primary-200 mb-2">{user.name}</p>
                 <button

@@ -5,7 +5,9 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Breweries from './pages/Breweries';
 import BreweryDetail from './pages/BreweryDetail';
+import BreweryForm from './pages/BreweryForm';
 import BeerDetail from './pages/BeerDetail';
+import BeerForm from './pages/BeerForm';
 import Trips from './pages/Trips';
 import TripsNew from './pages/TripsNew';
 import TripDetail from './pages/TripDetail';
@@ -23,7 +25,12 @@ function App() {
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />
         <Route path="breweries" element={<Breweries />} />
+        <Route path="breweries/new" element={<ProtectedRoute><BreweryForm /></ProtectedRoute>} />
+        <Route path="breweries/:id/edit" element={<ProtectedRoute><BreweryForm /></ProtectedRoute>} />
         <Route path="breweries/:id" element={<BreweryDetail />} />
+        <Route path="beers/new" element={<ProtectedRoute><BeerForm /></ProtectedRoute>} />
+        <Route path="beers/:breweryId/new" element={<ProtectedRoute><BeerForm /></ProtectedRoute>} />
+        <Route path="beers/:id/edit" element={<ProtectedRoute><BeerForm /></ProtectedRoute>} />
         <Route path="beers/:id" element={<BeerDetail />} />
         <Route path="trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
         <Route path="trips/new" element={<ProtectedRoute><TripsNew /></ProtectedRoute>} />
