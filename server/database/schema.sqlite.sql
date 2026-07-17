@@ -26,6 +26,7 @@ CREATE TABLE IF NOT EXISTS breweries (
   phone TEXT,
   description TEXT,
   type TEXT,
+  image_url TEXT,
   created_at TEXT
 );
 

@@ -134,3 +134,46 @@ UPDATE challenges SET image_url = '/images/challenge-social.jpg' WHERE id = 9 AN
 UPDATE challenges SET image_url = '/images/challenge-social.jpg' WHERE id = 10 AND image_url IS NULL;
 UPDATE challenges SET image_url = '/images/challenge-travel.jpg' WHERE id = 11 AND image_url IS NULL;
 UPDATE challenges SET image_url = '/images/challenge-travel.jpg' WHERE id = 12 AND image_url IS NULL;
+
+
+-- Ensure every brewery has a correct (brewery) photo. Runs idempotently.
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 1 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 2 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 3 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 4 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 5 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 6 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 7 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 8 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 9 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 10 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 11 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 12 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 13 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 14 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 15 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 16 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 17 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 18 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 19 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 20 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 21 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 22 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 23 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 24 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 25 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 26 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 27 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 28 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 29 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 30 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 31 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 32 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-01.jpg' WHERE id = 33 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-02.jpg' WHERE id = 34 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 35 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-04.jpg' WHERE id = 36 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-05.jpg' WHERE id = 37 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-06.jpg' WHERE id = 38 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-07.jpg' WHERE id = 39 AND (image_url IS NULL OR image_url = '');
+UPDATE breweries SET image_url = '/images/brewery-08.jpg' WHERE id = 40 AND (image_url IS NULL OR image_url = '');

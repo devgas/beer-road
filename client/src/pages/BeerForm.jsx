@@ -40,7 +40,7 @@ export default function BeerForm() {
           api.get('/breweries?limit=100'),
           isEdit ? api.get(`/beers/${id}`) : Promise.resolve(null),
         ]);
-        setBreweries(breweriesRes.data || []);
+        setBreweries(breweriesRes.data?.data || []);
 
         if (beerRes) {
           const b = beerRes.beer || beerRes;

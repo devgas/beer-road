@@ -123,12 +123,15 @@ async function initializeDatabase() {
   if (mode === 'pg') {
     const schema = await fs.promises.readFile(path.join(__dirname, 'schema.sql'), 'utf-8');
     await exec(schema);
+    // Existing deployments may predate the image_url column.
+    await exec('ALTER TABLE breweries ADD COLUMN IF NOT EXISTS image_url TEXT;');
     await seedIfMissing();
     return pgPool;
   }
 
   const schema = await fs.promises.readFile(path.join(__dirname, 'schema.sqlite.sql'), 'utf-8');
   await exec(schema);
+  await exec('ALTER TABLE breweries ADD COLUMN IF NOT EXISTS image_url TEXT;');
   await seedIfMissing();
   return sqliteDb;
 }

@@ -9,22 +9,37 @@ const BREWERY_IMAGES = [
   '/images/brewery-08.jpg',
 ];
 
+// Generic brewery building photos (not tied to a specific named brewery),
+// used as a sensible fallback so we never show a different brewery's photo.
+const BREWERY_FALLBACK_IMAGES = [
+  '/images/brewery-08.jpg',
+  '/images/brewery-03.jpg',
+  '/images/brewery-04.jpg',
+];
+
 const TYPE_IMAGES = {
-  farmhouse: '/images/brewery-08.jpg',
+  farmhouse: '/images/brewery-04.jpg',
   regional: '/images/brewery-02.jpg',
   sour: '/images/brewery-03.jpg',
-  micro: '/images/brewery-04.jpg',
+  micro: '/images/brewery-08.jpg',
 };
 
 const BEER_STYLE_IMAGES = {
   ipa: '/images/beer-ipa.jpg',
+  'pale ale': '/images/beer-ipa.jpg',
+  ale: '/images/beer-lager.jpg',
   stout: '/images/beer-stout.jpg',
   porter: '/images/beer-porter.jpg',
   pilsner: '/images/beer-pilsner.jpg',
   lager: '/images/beer-lager.jpg',
   saison: '/images/beer-saison.jpg',
   farmhouse: '/images/beer-farmhouse.jpg',
+  'farmhouse ale': '/images/beer-farmhouse.jpg',
   sour: '/images/beer-sour.jpg',
+  wheat: '/images/beer-lager.jpg',
+  witbier: '/images/beer-lager.jpg',
+  maibock: '/images/beer-lager.jpg',
+  'old ale': '/images/beer-stout.jpg',
 };
 
 const CHALLENGE_IMAGES = {
@@ -47,14 +62,14 @@ export function breweryImageUrl(brewery) {
   if (isUsableImageUrl(brewery?.image_url)) return brewery.image_url;
   const typeKey = brewery?.type?.toLowerCase();
   if (typeKey && TYPE_IMAGES[typeKey]) return TYPE_IMAGES[typeKey];
-  return BREWERY_IMAGES[stableIndex(brewery?.id || brewery?.name, BREWERY_IMAGES.length)];
+  return BREWERY_FALLBACK_IMAGES[stableIndex(brewery?.id || brewery?.name, BREWERY_FALLBACK_IMAGES.length)];
 }
 
 export function beerImageUrl(beer) {
   if (isUsableImageUrl(beer?.image_url)) return beer.image_url;
   const style = beer?.style?.toLowerCase() || '';
   const match = Object.keys(BEER_STYLE_IMAGES).find((key) => style.includes(key));
-  return match ? BEER_STYLE_IMAGES[match] : BREWERY_IMAGES[1];
+  return match ? BEER_STYLE_IMAGES[match] : '/images/beer-lager.jpg';
 }
 
 export function challengeImageUrl(challenge) {

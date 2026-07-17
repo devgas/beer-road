@@ -17,6 +17,14 @@ try {
   const schema = fs.readFileSync(schemaPath, 'utf-8');
   db.exec(schema);
 
+  // Add the image_url column for existing databases created before it existed.
+  // SQLite lacks ADD COLUMN IF NOT EXISTS, so ignore a duplicate-column error.
+  try {
+    db.exec('ALTER TABLE breweries ADD COLUMN image_url TEXT;');
+  } catch (err) {
+    if (!/duplicate column/i.test(err.message)) throw err;
+  }
+
   // 2) Seed every table idempotently so a partially seeded DB can recover.
   const seed = fs.readFileSync(seedPath, 'utf-8');
   const statements = seed
