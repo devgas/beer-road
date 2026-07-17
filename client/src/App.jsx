@@ -25,7 +25,7 @@ function App() {
         <Route path="breweries" element={<Breweries />} />
         <Route path="breweries/:id" element={<BreweryDetail />} />
         <Route path="beers/:id" element={<BeerDetail />} />
-        <Route path="trips" element={<Trips />} />
+        <Route path="trips" element={<ProtectedRoute><Trips /></ProtectedRoute>} />
         <Route path="trips/new" element={<ProtectedRoute><TripsNew /></ProtectedRoute>} />
         <Route path="trips/:id" element={<ProtectedRoute><TripDetail /></ProtectedRoute>} />
         <Route path="favorites" element={<ProtectedRoute><Favorites /></ProtectedRoute>} />

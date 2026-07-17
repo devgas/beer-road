@@ -3,6 +3,19 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import Map from '../components/Map';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
+
+function getTripStartDate(trip) {
+  return trip.start_date || trip.startDate || '';
+}
+
+function getTripEndDate(trip) {
+  return trip.end_date || trip.endDate || '';
+}
+
+function getStopName(stop) {
+  return stop.brewery_name || stop.name || 'Brewery stop';
+}
 
 export default function TripDetail() {
   const { id } = useParams();
@@ -20,28 +33,28 @@ export default function TripDetail() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
+  const fetchTrip = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await api.get(`/trips/${id}`);
+      setTrip(data);
+      setEditForm({
+        name: data.title || data.name || '',
+        description: data.description || '',
+        startDate: getTripStartDate(data),
+        endDate: getTripEndDate(data),
+      });
+      return data;
+    } catch (err) {
+      setError(err.response?.data?.message || err.message);
+      return null;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchTrip = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch(`/api/trips/${id}`);
-        if (!res.ok) throw new Error('Trip not found');
-        const data = await res.json();
-        const tripData = data;
-        setTrip(tripData);
-        setEditForm({
-          name: tripData.name || tripData.title || '',
-          description: tripData.description || '',
-          startDate: tripData.startDate || '',
-          endDate: tripData.endDate || '',
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchTrip();
   }, [id]);
 
@@ -52,7 +65,7 @@ export default function TripDetail() {
     }
     setSearching(true);
     try {
-      const res = await fetch(`/api/breweries?q=${encodeURIComponent(searchQuery.trim())}`);
+      const res = await fetch(`/api/breweries?q=${encodeURIComponent(searchQuery.trim())}&limit=8`);
       if (res.ok) {
         const data = await res.json();
         setSearchResults(data.data || data);
@@ -74,20 +87,27 @@ export default function TripDetail() {
   }, [searchQuery]);
 
   const handleSaveTrip = async () => {
+    if (!editForm.name.trim()) {
+      toast.error('Trip title is required');
+      return;
+    }
+    if (editForm.endDate && editForm.startDate && new Date(editForm.endDate) < new Date(editForm.startDate)) {
+      toast.error('End date must be on or after start date');
+      return;
+    }
     setSaving(true);
     try {
-      const res = await fetch(`/api/trips/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(editForm),
+      const { data } = await api.put(`/trips/${id}`, {
+        title: editForm.name.trim(),
+        description: editForm.description,
+        start_date: editForm.startDate || null,
+        end_date: editForm.endDate || null,
       });
-      if (!res.ok) throw new Error('Failed to update trip');
-      const data = await res.json();
       setTrip(data.trip || data);
       setIsEditing(false);
       toast.success('Trip updated!');
     } catch (err) {
-      toast.error(err.message || 'Failed to update trip');
+      toast.error(err.response?.data?.message || err.message || 'Failed to update trip');
     } finally {
       setSaving(false);
     }
@@ -95,34 +115,27 @@ export default function TripDetail() {
 
   const handleAddStop = async (brewery) => {
     try {
-      const res = await fetch(`/api/trips/${id}/stops`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ breweryId: brewery.id }),
-      });
-      if (!res.ok) throw new Error('Failed to add stop');
-      const data = await res.json();
-      setTrip((prev) => ({ ...prev, stops: [...(prev.stops || []), data.stop] }));
+      await api.post(`/trips/${id}/stops`, { brewery_id: brewery.id });
+      await fetchTrip();
       setShowAddStop(false);
       setSearchQuery('');
       setSearchResults([]);
       toast.success('Stop added!');
     } catch (err) {
-      toast.error(err.message || 'Failed to add stop');
+      toast.error(err.response?.data?.message || err.message || 'Failed to add stop');
     }
   };
 
   const handleRemoveStop = async (stopId) => {
     try {
-      const res = await fetch(`/api/trips/${id}/stops/${stopId}`, { method: 'DELETE' });
-      if (!res.ok) throw new Error('Failed to remove stop');
+      await api.delete(`/trips/${id}/stops/${stopId}`);
       setTrip((prev) => ({
         ...prev,
         stops: prev.stops.filter((s) => s.id !== stopId),
       }));
       toast.success('Stop removed');
     } catch (err) {
-      toast.error(err.message || 'Failed to remove stop');
+      toast.error(err.response?.data?.message || err.message || 'Failed to remove stop');
     }
   };
 
@@ -134,26 +147,21 @@ export default function TripDetail() {
     if (newIdx < 0 || newIdx >= stops.length) return;
     [stops[idx], stops[newIdx]] = [stops[newIdx], stops[idx]];
     try {
-      const res = await fetch(`/api/trips/${id}/stops/reorder`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ stops: stops.map((s) => s.id) }),
-      });
-      if (!res.ok) throw new Error('Failed to reorder stops');
+      await api.put(`/trips/${id}/stops/reorder`, { stops: stops.map((s) => s.id) });
       setTrip((prev) => ({ ...prev, stops }));
       toast.success('Stop reordered');
     } catch (err) {
-      toast.error(err.message || 'Failed to reorder stops');
+      toast.error(err.response?.data?.message || err.message || 'Failed to reorder stops');
     }
   };
 
   const handleDeleteTrip = async () => {
     try {
-      await fetch(`/api/trips/${id}`, { method: 'DELETE' });
+      await api.delete(`/trips/${id}`);
       toast.success('Trip deleted');
       navigate('/trips');
     } catch (err) {
-      toast.error(err.message || 'Failed to delete trip');
+      toast.error(err.response?.data?.message || err.message || 'Failed to delete trip');
     }
   };
 
@@ -292,8 +300,8 @@ export default function TripDetail() {
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">{trip.name || trip.title}</h1>
                 <p className="text-gray-600">
-                  {trip.startDate && new Date(trip.startDate).toLocaleDateString()}
-                  {trip.endDate && <> — {new Date(trip.endDate).toLocaleDateString()}</>}
+                  {getTripStartDate(trip) && new Date(getTripStartDate(trip)).toLocaleDateString()}
+                  {getTripEndDate(trip) && <> — {new Date(getTripEndDate(trip)).toLocaleDateString()}</>}
                 </p>
               </div>
               <span className="inline-flex items-center px-3 py-1.5 rounded-full text-sm font-medium bg-amber-100 text-amber-800 w-fit">
@@ -382,7 +390,7 @@ export default function TripDetail() {
                   </div>
                   <div>
                     <Link to={`/breweries/${stop.brewery_id || stop.id}`} className="font-semibold text-gray-900 hover:text-primary-600 transition-colors">
-                      {stop.name}
+                      {getStopName(stop)}
                     </Link>
                     <p className="text-sm text-gray-500">{stop.city}{stop.state ? `, ${stop.state}` : ''}</p>
                   </div>

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 export default function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, updateProfile } = useAuth();
   const [name, setName] = useState('');
   const [saving, setSaving] = useState(false);
   const [stats, setStats] = useState({ trips: 0, favorites: 0, reviews: 0 });
@@ -16,12 +18,12 @@ export default function Profile() {
     const fetchStats = async () => {
       try {
         const [tripsRes, favRes, reviewsRes] = await Promise.all([
-          fetch('/api/trips'),
-          fetch('/api/favorites'),
+          api.get('/trips'),
+          api.get('/favorites'),
           fetch('/api/reviews'),
         ]);
-        const trips = tripsRes.ok ? await tripsRes.json() : { data: [] };
-        const favs = favRes.ok ? await favRes.json() : { data: [] };
+        const trips = tripsRes.data || { data: [] };
+        const favs = favRes.data || { data: [] };
         const reviews = reviewsRes.ok ? await reviewsRes.json() : { data: [], total: 0 };
         setStats({
           trips: trips.data?.length || 0,
@@ -36,7 +38,16 @@ export default function Profile() {
   }, []);
 
   const handleSaveName = async () => {
-    toast('Profile update coming soon');
+    if (!name.trim()) {
+      toast.error('Name cannot be empty');
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateProfile({ name: name.trim() });
+    } finally {
+      setSaving(false);
+    }
   };
 
   if (!user) {

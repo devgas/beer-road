@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 export default function TripsNew() {
   const [formData, setFormData] = useState({ title: '', description: '', startDate: '', endDate: '' });
@@ -22,25 +23,16 @@ export default function TripsNew() {
 
     setSubmitting(true);
     try {
-      const res = await fetch('/api/trips', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.title,
-          description: formData.description,
-          startDate: formData.startDate,
-          endDate: formData.endDate,
-        }),
+      const { data } = await api.post('/trips', {
+        title: formData.title.trim(),
+        description: formData.description,
+        start_date: formData.startDate || null,
+        end_date: formData.endDate || null,
       });
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.message || 'Failed to create trip');
-      }
-      const data = await res.json();
       toast.success('Trip created!');
       navigate(`/trips/${data.trip?.id || data.id}`);
     } catch (err) {
-      toast.error(err.message || 'Failed to create trip');
+      toast.error(err.response?.data?.message || err.message || 'Failed to create trip');
     } finally {
       setSubmitting(false);
     }

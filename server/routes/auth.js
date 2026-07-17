@@ -105,7 +105,7 @@ router.get('/me', auth, async (req, res, next) => {
 router.patch('/me', auth, async (req, res, next) => {
   try {
     const { name } = req.body;
-    await db.prepare('UPDATE users SET name = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?').run(
+    await db.prepare('UPDATE users SET name = ? WHERE id = ?').run(
       name != null ? String(name).trim() : null,
       req.user.id
     );

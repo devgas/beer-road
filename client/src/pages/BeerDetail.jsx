@@ -1,29 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReviewStars from '../components/ReviewStars';
-
-const BEER_IMAGES = {
-  'ipa': '1559522206-15f3b7b88a7c',
-  'stout': '1559522206-15f3b7b88a7c',
-  'pilsner': '1559522206-15f3b7b88a7c',
-  'lager': '1559522206-15f3b7b88a7c',
-  'ale': '1559522206-15f3b7b88a7c',
-  'porter': '1559522206-15f3b7b88a7c',
-  'wheat': '1559522206-15f3b7b88a7c',
-  'sour': '1559522206-15f3b7b88a7c',
-  'belgian': '1559522206-15f3b7b88a7c',
-  'default': '1535958636474',
-};
-
-function getBeerImageId(style) {
-  if (!style) return BEER_IMAGES['default'];
-  const key = style.toLowerCase();
-  if (BEER_IMAGES[key]) return BEER_IMAGES[key];
-  for (const k of Object.keys(BEER_IMAGES)) {
-    if (k !== 'default' && key.includes(k)) return BEER_IMAGES[k];
-  }
-  return BEER_IMAGES['default'];
-}
+import { beerImageUrl } from '../utils/media';
 
 export default function BeerDetail() {
   const { id } = useParams();
@@ -108,8 +86,6 @@ export default function BeerDetail() {
     );
   }
 
-  const beerImageId = getBeerImageId(beer.style);
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
       <nav className="flex items-center gap-2 text-sm text-gray-500 mb-6 flex-wrap">
@@ -124,7 +100,7 @@ export default function BeerDetail() {
         <div className="h-64 bg-gray-100 flex items-center justify-center">
           {!imgError ? (
             <img
-              src={`https://images.unsplash.com/photo-${beerImageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
+              src={beerImageUrl(beer)}
               alt={beer.name}
               loading="lazy"
               onError={() => setImgError(true)}

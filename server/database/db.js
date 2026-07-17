@@ -30,11 +30,14 @@ if (connectionString) {
 } else {
   mode = 'sqlite';
   const Database = require('better-sqlite3');
-  const dbPath = path.join(__dirname, 'beer-road.db');
-  // Read-only at runtime: the file is produced by server/scripts/seed-sqlite.js
-  // during the build. A read-only, fileMustExist handle is safe on Vercel's
-  // immutable filesystem.
-  sqliteDb = new Database(dbPath, { readonly: true, fileMustExist: true });
+  const sourceDbPath = path.join(__dirname, 'beer-road.db');
+  const dbPath = process.env.SQLITE_DB_PATH || (process.env.VERCEL ? path.join('/tmp', 'beer-road.db') : sourceDbPath);
+
+  if (dbPath !== sourceDbPath && !fs.existsSync(dbPath)) {
+    fs.copyFileSync(sourceDbPath, dbPath);
+  }
+
+  sqliteDb = new Database(dbPath, { fileMustExist: true });
   sqliteDb.pragma('foreign_keys = ON');
 }
 
@@ -77,7 +80,11 @@ function prepare(sql) {
     }
 
     function run(...params) {
-      return pgQuery(pgSql, params).then((result) => ({
+      const runnableSql = /^\s*INSERT\b/i.test(pgSql) && !/\bRETURNING\b/i.test(pgSql)
+        ? `${pgSql} RETURNING id`
+        : pgSql;
+
+      return pgQuery(runnableSql, params).then((result) => ({
         lastInsertRowid: result.rows[0]?.id || 0,
         changes: result.rowCount,
       }));
@@ -116,24 +123,42 @@ async function initializeDatabase() {
   if (mode === 'pg') {
     const schema = await fs.promises.readFile(path.join(__dirname, 'schema.sql'), 'utf-8');
     await exec(schema);
-    await seedIfEmpty();
+    await seedIfMissing();
+    return pgPool;
   }
-  return mode === 'pg' ? pgPool : sqliteDb;
+
+  const schema = await fs.promises.readFile(path.join(__dirname, 'schema.sqlite.sql'), 'utf-8');
+  await exec(schema);
+  await seedIfMissing();
+  return sqliteDb;
 }
 
 /**
- * Insert seed data only when tables are empty (Postgres only).
+ * Insert seed data without clobbering existing user/runtime data.
  */
-async function seedIfEmpty() {
-  if (mode !== 'pg') return;
-
-  const result = await pgQuery('SELECT COUNT(*) AS count FROM breweries');
-  const breweryCount = parseInt(result.rows[0]?.count || '0', 10);
-
-  if (breweryCount > 0) return;
-
+async function runSeedSql() {
   const seed = await fs.promises.readFile(path.join(__dirname, 'seed.sql'), 'utf-8');
-  await exec(seed);
+  const statements = seed
+    .split(';')
+    .map((statement) => statement.trim())
+    .filter(Boolean);
+
+  for (const statement of statements) {
+    if (!/\bINSERT\s+INTO\b/i.test(statement)) {
+      await exec(`${statement};`);
+      continue;
+    }
+
+    if (mode === 'pg') {
+      await exec(`${statement} ON CONFLICT (id) DO NOTHING;`);
+    } else {
+      await exec(`${statement.replace(/\bINSERT\s+INTO\b/i, 'INSERT OR IGNORE INTO')};`);
+    }
+  }
+}
+
+async function seedIfMissing() {
+  await runSeedSql();
 }
 
 // The `db` property is the handle routes consume (db.prepare / db.exec).
@@ -147,6 +172,7 @@ module.exports = {
   prepare,
   exec,
   initializeDatabase,
-  seedIfEmpty,
+  seedIfEmpty: seedIfMissing,
+  seedIfMissing,
   PG_UNIQUE_VIOLATION,
 };

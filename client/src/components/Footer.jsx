@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useI18n } from '../context/I18nContext';
 
 export default function Footer() {
+  const { t } = useI18n();
+
   return (
     <footer className="bg-gray-900 text-gray-300 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -11,34 +14,34 @@ export default function Footer() {
               <span>Beer Road Save</span>
             </Link>
             <p className="mt-3 text-sm text-gray-400 max-w-md">
-              Discover, save, and plan your perfect brewery road trip. Explore thousands of breweries worldwide and create unforgettable craft beer adventures.
+              {t('footerText')}
             </p>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Explore</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('explore')}</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/breweries" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Breweries</Link></li>
-              <li><Link to="/trips" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Road Trips</Link></li>
-              <li><Link to="/favorites" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Favorites</Link></li>
+              <li><Link to="/breweries" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('navBreweries')}</Link></li>
+              <li><Link to="/trips" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('roadTrips')}</Link></li>
+              <li><Link to="/favorites" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('navFavorites')}</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">Account</h3>
+            <h3 className="text-sm font-semibold text-white uppercase tracking-wider mb-4">{t('account')}</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/login" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Login</Link></li>
-              <li><Link to="/register" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Register</Link></li>
-              <li><Link to="/profile" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">Profile</Link></li>
+              <li><Link to="/login" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('navLogin')}</Link></li>
+              <li><Link to="/register" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('navRegister')}</Link></li>
+              <li><Link to="/profile" className="text-sm text-gray-400 hover:text-primary-400 transition-colors">{t('navProfile')}</Link></li>
             </ul>
           </div>
         </div>
         <div className="mt-12 pt-8 border-t border-gray-800 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-gray-500">
-            © {new Date().getFullYear()} Beer Road Save. All rights reserved.
+            © {new Date().getFullYear()} Beer Road Save. {t('allRightsReserved')}
           </p>
           <div className="flex gap-6 text-sm">
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">About</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">Privacy</a>
-            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">Terms</a>
+            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">{t('about')}</a>
+            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">{t('privacy')}</a>
+            <a href="#" className="text-gray-400 hover:text-primary-400 transition-colors">{t('terms')}</a>
           </div>
         </div>
       </div>

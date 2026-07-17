@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import { useI18n } from '../context/I18nContext';
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const { user, login } = useAuth();
+  const { t } = useI18n();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,13 +35,13 @@ export default function Login() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
           <div className="text-center mb-8">
             <span className="text-4xl">🍻</span>
-            <h1 className="text-2xl font-bold text-gray-900 mt-2">Welcome back</h1>
-            <p className="text-gray-600 mt-1">Sign in to your Beer Road Save account</p>
+            <h1 className="text-2xl font-bold text-gray-900 mt-2">{t('welcomeBack')}</h1>
+            <p className="text-gray-600 mt-1">{t('signInSubtitle')}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('email')}</label>
               <input
                 type="email"
                 value={email}
@@ -50,7 +52,7 @@ export default function Login() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">{t('password')}</label>
               <input
                 type="password"
                 value={password}
@@ -65,14 +67,14 @@ export default function Login() {
               disabled={loading}
               className="w-full bg-primary-500 hover:bg-primary-600 disabled:bg-primary-400 text-white font-medium py-2.5 rounded-lg transition-colors"
             >
-              {loading ? 'Signing in...' : 'Sign In'}
+              {loading ? t('signingIn') : t('signIn')}
             </button>
           </form>
 
           <p className="text-center text-sm text-gray-600 mt-6">
-            Don't have an account?{' '}
+            {t('noAccount')}{' '}
             <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
-              Sign up
+              {t('signUp')}
             </Link>
           </p>
         </div>

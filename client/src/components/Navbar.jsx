@@ -1,11 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import LanguageSwitcher from './LanguageSwitcher';
+import { useI18n } from '../context/I18nContext';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { user, logout } = useAuth();
+  const { t } = useI18n();
   const location = useLocation();
 
   useEffect(() => {
@@ -26,7 +29,7 @@ export default function Navbar() {
       <Link
         to={to}
         className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg text-xs transition-colors min-w-[56px] ${
-          active ? 'text-white font-medium' : 'text-primary-100 hover:text-white'
+          active ? 'text-primary-600 font-medium' : 'text-gray-500 hover:text-primary-600'
         }`}
       >
         {icon}
@@ -36,14 +39,14 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { to: '/breweries', label: 'Breweries', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4" /></svg> },
-    { to: '/challenges', label: 'Challenges', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
-    { to: '/trips', label: 'Trips', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
+    { to: '/breweries', label: t('navBreweries'), icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4" /></svg> },
+    { to: '/challenges', label: t('navChallenges'), icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg> },
+    { to: '/trips', label: t('navTrips'), icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg> },
   ];
 
   if (user) {
-    navItems.push({ to: '/favorites', label: 'Favorites', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> });
-    navItems.push({ to: '/profile', label: 'Profile', icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> });
+    navItems.push({ to: '/favorites', label: t('navFavorites'), icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg> });
+    navItems.push({ to: '/profile', label: t('navProfile'), icon: <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg> });
   }
 
   return (
@@ -57,21 +60,21 @@ export default function Navbar() {
 
           <div className="hidden md:flex items-center gap-1">
             <Link to="/breweries" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/breweries')}`}>
-              Breweries
+              {t('navBreweries')}
             </Link>
             <Link to="/challenges" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/challenges')}`}>
-              Challenges
+              {t('navChallenges')}
             </Link>
             {user && (
               <>
                 <Link to="/trips" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/trips')}`}>
-                  Trips
+                  {t('navTrips')}
                 </Link>
                 <Link to="/favorites" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/favorites')}`}>
-                  Favorites
+                  {t('navFavorites')}
                 </Link>
                 <Link to="/profile" className={`px-3 py-2 rounded-lg text-sm transition-colors ${isActive('/profile')}`}>
-                  Profile
+                  {t('navProfile')}
                 </Link>
                 <div className="w-px h-6 bg-primary-400 mx-2" />
                 <span className="text-primary-200 text-sm px-2">{user.name}</span>
@@ -79,7 +82,7 @@ export default function Navbar() {
                   onClick={logout}
                   className="ml-1 px-3 py-2 bg-primary-700 hover:bg-primary-800 rounded-lg text-sm font-medium transition-colors"
                 >
-                  Logout
+                  {t('navLogout')}
                 </button>
               </>
             )}
@@ -89,22 +92,23 @@ export default function Navbar() {
                   to="/login"
                   className="px-3 py-2 text-sm font-medium text-primary-100 hover:text-white transition-colors"
                 >
-                  Login
+                  {t('navLogin')}
                 </Link>
                 <Link
                   to="/register"
                   className="ml-1 px-4 py-2 bg-white text-primary-600 hover:bg-primary-50 rounded-lg text-sm font-medium transition-colors"
                 >
-                  Register
+                  {t('navRegister')}
                 </Link>
               </>
             )}
+            <LanguageSwitcher compact />
           </div>
 
           <button
             onClick={() => setMobileOpen(!mobileOpen)}
             className="md:hidden p-2 rounded-lg hover:bg-primary-600 transition-colors"
-            aria-label="Toggle menu"
+            aria-label={t('toggleMenu')}
             aria-expanded={mobileOpen}
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,32 +125,35 @@ export default function Navbar() {
         {mobileOpen && (
           <div className="md:hidden pb-4 pt-2 border-t border-primary-400/30 animate-fade-in">
             <Link to="/breweries" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">
-              Breweries
+              {t('navBreweries')}
             </Link>
             <Link to="/challenges" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">
-              Challenges
+              {t('navChallenges')}
             </Link>
           {user ? (
             <>
-              <Link to="/trips" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">Trips</Link>
-              <Link to="/favorites" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">Favorites</Link>
-              <Link to="/profile" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">Profile</Link>
+              <Link to="/trips" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navTrips')}</Link>
+              <Link to="/favorites" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navFavorites')}</Link>
+              <Link to="/profile" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors">{t('navProfile')}</Link>
               <div className="pt-2 mt-2 border-t border-primary-400/30">
                 <p className="px-3 text-sm text-primary-200 mb-2">{user.name}</p>
                 <button
                   onClick={logout}
                   className="w-full text-left px-3 py-2.5 bg-primary-700 hover:bg-primary-800 rounded-lg text-sm font-medium transition-colors"
                 >
-                  Logout
+                  {t('navLogout')}
                 </button>
               </div>
             </>
           ) : (
             <div className="pt-2 mt-2 border-t border-primary-400/30 flex flex-col gap-2">
-              <Link to="/login" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors font-medium">Login</Link>
-              <Link to="/register" className="block py-2.5 px-3 bg-white text-primary-600 rounded-lg text-center font-medium hover:bg-primary-50 transition-colors">Register</Link>
+              <Link to="/login" className="block py-2.5 px-3 rounded-lg hover:bg-primary-600 transition-colors font-medium">{t('navLogin')}</Link>
+              <Link to="/register" className="block py-2.5 px-3 bg-white text-primary-600 rounded-lg text-center font-medium hover:bg-primary-50 transition-colors">{t('navRegister')}</Link>
             </div>
           )}
+          <div className="px-3 pt-3">
+            <LanguageSwitcher />
+          </div>
         </div>
       )}
 

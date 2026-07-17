@@ -6,6 +6,10 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
+function isUniqueViolation(err) {
+  return err.code === '23505' || err.code === 'SQLITE_CONSTRAINT_UNIQUE' || err.code === 'SQLITE_CONSTRAINT_PRIMARYKEY';
+}
+
 /**
  * GET /api/reviews/brewery/:breweryId
  * Public list of reviews for a brewery, newest first, with author names.
@@ -86,7 +90,7 @@ router.post('/', auth, async (req, res, next) => {
     res.status(201).json({ review });
   } catch (err) {
     // UNIQUE(user_id, brewery_id) violation -> already reviewed.
-    if (err.code === '23505') {
+    if (isUniqueViolation(err)) {
       err.status = 409;
       err.message = 'You have already reviewed this brewery';
     }

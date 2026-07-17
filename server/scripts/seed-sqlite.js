@@ -17,18 +17,22 @@ try {
   const schema = fs.readFileSync(schemaPath, 'utf-8');
   db.exec(schema);
 
-  // 2) Seed only when the breweries table is empty (idempotent).
-  const { count } = db
-    .prepare('SELECT COUNT(*) AS count FROM breweries')
-    .get();
+  // 2) Seed every table idempotently so a partially seeded DB can recover.
+  const seed = fs.readFileSync(seedPath, 'utf-8');
+  const statements = seed
+    .split(';')
+    .map((statement) => statement.trim())
+    .filter(Boolean);
 
-  if (count === 0) {
-    const seed = fs.readFileSync(seedPath, 'utf-8');
-    db.exec(seed);
-    console.log('[seed:sqlite] Inserted seed data (breweries, beers, challenges).');
-  } else {
-    console.log('[seed:sqlite] Breweries already present; skipping seed.');
+  for (const statement of statements) {
+    if (/\bINSERT\s+INTO\b/i.test(statement)) {
+      db.exec(`${statement.replace(/\bINSERT\s+INTO\b/i, 'INSERT OR IGNORE INTO')};`);
+    } else {
+      db.exec(`${statement};`);
+    }
   }
+
+  console.log('[seed:sqlite] Seed data ensured (breweries, beers, challenges).');
 
   // 3) Final pragmas: DELETE journal mode is read-only friendly, enable FKs.
   db.exec('PRAGMA journal_mode = DELETE;');

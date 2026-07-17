@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import BreweryCard from '../components/BreweryCard';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
+import api from '../utils/api';
 
 export default function Favorites() {
   const [favorites, setFavorites] = useState([]);
@@ -13,13 +14,11 @@ export default function Favorites() {
     const fetchFavorites = async () => {
       setLoading(true);
       try {
-        const res = await fetch('/api/favorites');
-        if (res.ok) {
-          const data = await res.json();
-          setFavorites(data.data || data);
-        }
+        const { data } = await api.get('/favorites');
+        setFavorites(data.data || []);
       } catch (e) {
         console.error('Failed to fetch favorites:', e);
+        toast.error(e.response?.data?.message || 'Failed to load favorites');
       } finally {
         setLoading(false);
       }
@@ -29,13 +28,11 @@ export default function Favorites() {
 
   const removeFavorite = async (breweryId) => {
     try {
-      const res = await fetch(`/api/favorites/${breweryId}`, { method: 'DELETE' });
-      if (res.ok) {
-        setFavorites(prev => prev.filter(f => f.id !== breweryId));
-        toast.success('Removed from favorites');
-      }
+      await api.delete(`/favorites/${breweryId}`);
+      setFavorites(prev => prev.filter(f => f.id !== breweryId));
+      toast.success('Removed from favorites');
     } catch (err) {
-      toast.error('Failed to remove favorite');
+      toast.error(err.response?.data?.message || 'Failed to remove favorite');
     }
   };
 

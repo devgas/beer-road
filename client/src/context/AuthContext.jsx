@@ -61,8 +61,21 @@ export function AuthProvider({ children }) {
     toast.success('Logged out');
   };
 
+  const updateProfile = async ({ name }) => {
+    try {
+      const { data } = await api.patch('/auth/me', { name });
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(data.user);
+      toast.success('Profile updated');
+      return data.user;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Profile update failed');
+      throw error;
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, register, logout, updateProfile, loading }}>
       {children}
     </AuthContext.Provider>
   );

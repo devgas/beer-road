@@ -6,6 +6,16 @@ const { auth } = require('../middleware/auth');
 
 const router = express.Router();
 
+function normalizeRating(rating) {
+  const numericRating = Number(rating ?? 5);
+  if (!Number.isInteger(numericRating) || numericRating < 1 || numericRating > 5) {
+    const err = new Error('Rating must be an integer between 1 and 5');
+    err.status = 400;
+    throw err;
+  }
+  return numericRating;
+}
+
 router.get('/', async (req, res, next) => {
   try {
     const { category, difficulty } = req.query;
@@ -38,20 +48,6 @@ router.get('/random', async (req, res, next) => {
   }
 });
 
-router.get('/:id', async (req, res, next) => {
-  try {
-    const challenge = await db.prepare('SELECT * FROM challenges WHERE id = ?').get(req.params.id);
-    if (!challenge) {
-      const err = new Error('Challenge not found');
-      err.status = 404;
-      throw err;
-    }
-    res.json({ challenge });
-  } catch (err) {
-    next(err);
-  }
-});
-
 router.get('/my-challenges', auth, async (req, res, next) => {
   try {
     const { status } = req.query;
@@ -76,24 +72,44 @@ router.get('/my-challenges', auth, async (req, res, next) => {
   }
 });
 
+router.get('/meta/categories', async (req, res, next) => {
+  try {
+    const categories = await db.prepare('SELECT DISTINCT category FROM challenges WHERE is_active = 1 ORDER BY category ASC').all();
+    res.json(categories.map((c) => c.category));
+  } catch (err) {
+    next(err);
+  }
+});
+
 router.post('/:id/accept', auth, async (req, res, next) => {
   try {
     const challengeId = req.params.id;
     const userId = req.user.id;
 
-    const result = await db.prepare(
-      'INSERT OR IGNORE INTO user_challenges (user_id, challenge_id, status) VALUES (?, ?, "pending")'
-    ).run(userId, challengeId);
+    const challenge = await db.prepare('SELECT id FROM challenges WHERE id = ? AND is_active = 1').get(challengeId);
+    if (!challenge) {
+      const err = new Error('Challenge not found');
+      err.status = 404;
+      throw err;
+    }
 
-    if (result.changes === 0) {
+    const existing = await db.prepare(
+      'SELECT * FROM user_challenges WHERE user_id = ? AND challenge_id = ?'
+    ).get(userId, challengeId);
+
+    if (existing) {
       const err = new Error('You have already accepted this challenge');
       err.status = 400;
       throw err;
     }
 
-     const userChallenge = await db.prepare(
-       'SELECT * FROM user_challenges WHERE user_id = ? AND challenge_id = ?'
-     ).get(userId, challengeId);
+    const info = await db.prepare(
+      "INSERT INTO user_challenges (user_id, challenge_id, status) VALUES (?, ?, 'pending')"
+    ).run(userId, challengeId);
+
+    const userChallenge = await db.prepare(
+      'SELECT * FROM user_challenges WHERE id = ?'
+    ).get(info.lastInsertRowid);
 
     res.status(201).json({ userChallenge });
   } catch (err) {
@@ -105,11 +121,11 @@ router.post('/:id/complete', auth, async (req, res, next) => {
   try {
     const challengeId = req.params.id;
     const userId = req.user.id;
-    const { proof_image_url, review, brewery_id, beer_id } = req.body;
+    const { proof_image_url, review, brewery_id } = req.body;
 
     const userChallenge = await db.prepare(
-      'SELECT * FROM user_challenges WHERE user_id = ? AND challenge_id = ? AND status = "pending"'
-    ).get(userId, challengeId);
+      'SELECT * FROM user_challenges WHERE user_id = ? AND challenge_id = ? AND status = ?'
+    ).get(userId, challengeId, 'pending');
 
     if (!userChallenge) {
       const err = new Error('Challenge not found or already completed');
@@ -118,15 +134,33 @@ router.post('/:id/complete', auth, async (req, res, next) => {
     }
 
     if (review && brewery_id) {
-      const { rating = 5, comment } = review;
-     await db.prepare(
-        'INSERT INTO reviews (user_id, brewery_id, rating, comment) VALUES (?, ?, ?, ?)'
-      ).run(userId, brewery_id, rating, comment || '');
+      const brewery = await db.prepare('SELECT id FROM breweries WHERE id = ?').get(brewery_id);
+      if (!brewery) {
+        const err = new Error('Brewery not found');
+        err.status = 404;
+        throw err;
+      }
+
+      const rating = normalizeRating(review.rating);
+      const comment = review.comment || '';
+      const existingReview = await db
+        .prepare('SELECT id FROM reviews WHERE user_id = ? AND brewery_id = ?')
+        .get(userId, brewery_id);
+
+      if (existingReview) {
+        await db.prepare(
+          'UPDATE reviews SET rating = ?, comment = ? WHERE id = ?'
+        ).run(rating, comment, existingReview.id);
+      } else {
+        await db.prepare(
+          'INSERT INTO reviews (user_id, brewery_id, rating, comment) VALUES (?, ?, ?, ?)'
+        ).run(userId, brewery_id, rating, comment);
+      }
     }
 
-     await db.prepare(
-       'UPDATE user_challenges SET status = "completed", proof_image_url = ?, review = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?'
-     ).run(proof_image_url || null, review?.comment || null, userChallenge.id);
+    await db.prepare(
+      "UPDATE user_challenges SET status = 'completed', proof_image_url = ?, review = ?, completed_at = CURRENT_TIMESTAMP WHERE id = ?"
+    ).run(proof_image_url || null, review?.comment || null, userChallenge.id);
 
     const updated = await db.prepare('SELECT * FROM user_challenges WHERE id = ?').get(userChallenge.id);
     res.json({ userChallenge: updated });
@@ -135,10 +169,15 @@ router.post('/:id/complete', auth, async (req, res, next) => {
   }
 });
 
-router.get('/meta/categories', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
-    const categories = await db.prepare('SELECT DISTINCT category FROM challenges WHERE is_active = 1 ORDER BY category ASC').all();
-    res.json(categories.map((c) => c.category));
+    const challenge = await db.prepare('SELECT * FROM challenges WHERE id = ?').get(req.params.id);
+    if (!challenge) {
+      const err = new Error('Challenge not found');
+      err.status = 404;
+      throw err;
+    }
+    res.json({ challenge });
   } catch (err) {
     next(err);
   }

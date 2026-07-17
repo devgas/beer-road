@@ -1,21 +1,6 @@
-import { useState, useMemo } from 'react';
-import { Link } from 'react-router-dom';
-
-const CHALLENGE_IMAGES = [
-  '1535958636474', '1535958636475', '1535958636476', '1535958636477', '1535958636478',
-  '1535958636479', '1535958636480', '1535958636481', '1535958636482', '1535958636483',
-  '1535958636484', '1535958636485', '1535958636486', '1535958636487', '1535958636488',
-  '1535958636489', '1535958636490', '1535958636491', '1535958636492', '1535958636493',
-];
-
-function getChallengeImageId(challengeId) {
-  let hash = 0;
-  const str = String(challengeId);
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return CHALLENGE_IMAGES[Math.abs(hash) % CHALLENGE_IMAGES.length];
-}
+import { useState } from 'react';
+import { challengeImageUrl } from '../utils/media';
+import { useI18n } from '../context/I18nContext';
 
 const difficultyColors = {
   easy: 'bg-green-100 text-green-800',
@@ -25,8 +10,8 @@ const difficultyColors = {
 
 export default function ChallengeCard({ challenge, onAccept, accepted }) {
   const [imgError, setImgError] = useState(false);
-  const imageId = useMemo(() => getChallengeImageId(challenge.id), [challenge.id]);
-  const imageUrl = `https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80`;
+  const imageUrl = challengeImageUrl(challenge);
+  const { t } = useI18n();
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
@@ -63,13 +48,13 @@ export default function ChallengeCard({ challenge, onAccept, accepted }) {
           </div>
 
           {accepted ? (
-            <span className="text-sm text-green-600 font-medium">✓ Accepted</span>
+            <span className="text-sm text-green-600 font-medium">✓ {t('accepted')}</span>
           ) : (
             <button
               onClick={() => onAccept(challenge.id)}
               className="px-4 py-2 bg-primary-500 hover:bg-primary-600 text-white text-sm font-medium rounded-lg transition-colors"
             >
-              Accept
+              {t('accept')}
             </button>
           )}
         </div>

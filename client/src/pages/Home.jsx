@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import BreweryCard from '../components/BreweryCard';
 import { useAuth } from '../context/AuthContext';
+import { useI18n } from '../context/I18nContext';
 
 export default function Home() {
   const [featuredBreweries, setFeaturedBreweries] = useState([]);
@@ -9,6 +10,7 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useI18n();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -66,30 +68,30 @@ export default function Home() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm text-primary-100 mb-6">
               <span>🍻</span>
-              <span>Discover Craft Beer</span>
+              <span>{t('homeBadge')}</span>
             </div>
             <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
               Beer Road Save
             </h1>
             <p className="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
-              Discover, save, and plan your perfect brewery road trip
+              {t('homeSubtitle')}
             </p>
             <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4 max-w-2xl">
               <input
                 type="text"
                 name="search"
-                placeholder="Search breweries by name, city, or state..."
+                placeholder={t('searchBreweriesPlaceholder')}
                 className="flex-1 px-6 py-4 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary-500 text-gray-800 shadow-lg"
               />
               <button
                 type="submit"
                 className="bg-primary-500 hover:bg-primary-400 text-gray-900 px-8 py-4 rounded-xl font-semibold transition-all hover:shadow-lg whitespace-nowrap"
               >
-                Search Breweries
+                {t('searchBreweries')}
               </button>
             </form>
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-gray-300">
-              <span>Try:</span>
+              <span>{t('tryLabel')}</span>
               {['Portland', 'Denver', 'San Diego', 'Asheville'].map((city) => (
                 <button
                   key={city}
@@ -105,34 +107,14 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Quick Search Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 -mt-8 relative z-30">
-        <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 md:p-8">
-          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-4">
-            <input
-              type="text"
-              name="search"
-              placeholder="Find breweries near you..."
-              className="flex-1 px-5 py-3.5 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-gray-800"
-            />
-            <button
-              type="submit"
-              className="px-8 py-3.5 bg-primary-500 hover:bg-primary-600 text-white font-semibold rounded-xl transition-all hover:shadow-lg whitespace-nowrap"
-            >
-              Search
-            </button>
-          </form>
-        </div>
-      </section>
-
       {/* Featured Breweries */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-            Featured Breweries
+            {t('featuredBreweries')}
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Explore some of the most popular craft breweries around the world
+            {t('featuredSubtitle')}
           </p>
         </div>
         {loading ? (
@@ -159,7 +141,7 @@ export default function Home() {
             to="/breweries"
             className="inline-flex items-center gap-2 px-6 py-3 border-2 border-gray-200 text-gray-700 font-semibold rounded-xl hover:border-primary-500 hover:text-primary-600 transition-colors"
           >
-            View All Breweries
+            {t('viewAllBreweries')}
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
@@ -172,17 +154,17 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-              Join the Community
+              {t('joinCommunity')}
             </h2>
             <p className="text-lg text-gray-600">
-              Thousands of beer lovers are already planning their next adventure
+              {t('communitySubtitle')}
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
-              { value: stats.breweries || '10,000+', label: 'Breweries', icon: '🍺' },
-              { value: stats.trips || '5,000+', label: 'Road Trips Planned', icon: '🗺️' },
-              { value: stats.users || '20,000+', label: 'Beer Lovers', icon: '👋' },
+              { value: stats.breweries || '10,000+', label: t('breweries'), icon: '🍺' },
+              { value: stats.trips || '5,000+', label: t('roadTripsPlanned'), icon: '🗺️' },
+              { value: stats.users || '20,000+', label: t('beerLovers'), icon: '👋' },
             ].map((stat, i) => (
               <div key={i} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center hover:shadow-md transition-shadow">
                 <div className="text-4xl mb-3">{stat.icon}</div>
@@ -198,23 +180,23 @@ export default function Home() {
       <section className="bg-gradient-to-r from-primary-500 to-amber-500 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
-            Ready to Start Your Journey?
+            {t('readyJourney')}
           </h2>
           <p className="text-primary-100 mb-10 max-w-2xl mx-auto text-lg">
-            Join thousands of craft beer enthusiasts who are planning their next adventure with Beer Road Save.
+            {t('readyJourneyText')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/breweries"
               className="inline-flex items-center justify-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-xl hover:bg-primary-50 transition-all hover:shadow-lg"
             >
-              Find Breweries
+              {t('findBreweries')}
             </Link>
             <Link
               to={user ? '/trips' : '/register'}
               className="inline-flex items-center justify-center px-8 py-4 border-2 border-white text-white font-semibold rounded-xl hover:bg-white/10 transition-all"
             >
-              {user ? 'My Trips' : 'Get Started'}
+              {user ? t('myTrips') : t('getStarted')}
             </Link>
           </div>
         </div>

@@ -2,8 +2,10 @@ import { Link } from 'react-router-dom';
 
 export default function TripCard({ trip }) {
   const stopsCount = trip.stops?.length || 0;
-  const startDate = trip.startDate ? new Date(trip.startDate) : null;
-  const endDate = trip.endDate ? new Date(trip.endDate) : null;
+  const startValue = trip.start_date || trip.startDate;
+  const endValue = trip.end_date || trip.endDate;
+  const startDate = startValue ? new Date(startValue) : null;
+  const endDate = endValue ? new Date(endValue) : null;
 
   const formatDate = (date) => {
     if (!date) return null;

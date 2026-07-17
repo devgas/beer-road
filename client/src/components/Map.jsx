@@ -30,8 +30,15 @@ function PanToSelected({ position }) {
   return null;
 }
 
+function getPosition(item) {
+  const lat = Number(item.lat ?? item.latitude);
+  const lng = Number(item.lng ?? item.longitude);
+  return Number.isFinite(lat) && Number.isFinite(lng) ? [lat, lng] : null;
+}
+
 const BreweryMarker = memo(({ brewery, onClick, isSelected }) => {
-  const position = [brewery.lat || brewery.latitude, brewery.lng || brewery.longitude];
+  const position = getPosition(brewery);
+  if (!position) return null;
   
   return (
     <Marker
@@ -73,12 +80,14 @@ export default function Map({
 }) {
   const routePositions = useMemo(() => {
     if (!showRoute || !trips.length) return [];
-    return trips.flatMap((t) => (t.stops || []).map((s) => [s.lat ?? s.latitude, s.lng ?? s.longitude]));
+    return trips.flatMap((t) => (t.stops || []).map(getPosition).filter(Boolean));
   }, [trips, showRoute]);
 
   const allPositions = useMemo(() => {
-    return breweries.map((b) => [b.lat || b.latitude, b.lng || b.longitude]);
+    return breweries.map(getPosition).filter(Boolean);
   }, [breweries]);
+
+  const selectedPosition = selectedBrewery ? getPosition(selectedBrewery) : null;
 
   return (
     <div className="rounded-xl overflow-hidden shadow-lg border border-gray-200" style={{ height }}>
@@ -95,7 +104,7 @@ export default function Map({
         />
         <ZoomControl position="bottomright" />
         {allPositions.length > 0 && <FitBounds positions={allPositions} />}
-        {selectedBrewery && <PanToSelected position={[selectedBrewery.lat || selectedBrewery.latitude, selectedBrewery.lng || selectedBrewery.longitude]} />}
+        {selectedPosition && <PanToSelected position={selectedPosition} />}
         
         {breweries.map((brewery) => (
           <BreweryMarker
@@ -112,10 +121,13 @@ export default function Map({
               positions={routePositions}
               pathOptions={{ color: '#f59e0b', weight: 4, dashArray: '10, 10', opacity: 0.8 }}
             />
-            {trips.flatMap((t) => (t.stops || []).map((stop, idx) => (
+            {trips.flatMap((t) => (t.stops || []).map((stop, idx) => {
+              const stopPosition = getPosition(stop);
+              if (!stopPosition) return null;
+              return (
               <Marker
                 key={`stop-${stop.id}`}
-                position={[stop.lat ?? stop.latitude, stop.lng ?? stop.longitude]}
+                position={stopPosition}
                 icon={L.divIcon({
                   className: 'stop-marker',
                   html: `<div style="width: 28px; height: 28px; background: #f59e0b; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; color: white; font-size: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">${idx + 1}</div>`,
@@ -124,10 +136,11 @@ export default function Map({
                 })}
               >
                 <Tooltip direction="top" offset={[0, -10]}>
-                  Stop {idx + 1}: {stop.name}
+                  Stop {idx + 1}: {stop.brewery_name || stop.name || 'Brewery stop'}
                 </Tooltip>
               </Marker>
-            )))}
+              );
+            }).filter(Boolean))}
           </>
         )}
       </MapContainer>

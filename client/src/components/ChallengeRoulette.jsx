@@ -1,13 +1,20 @@
 import { useState } from 'react';
 import toast from 'react-hot-toast';
+import { useI18n } from '../context/I18nContext';
 
-export default function ChallengeRoulette({ challenges, onSpin, spinning, resultChallenge }) {
+export default function ChallengeRoulette({ challenges, onSpin, spinning, resultChallenge, loading = false, disabled = false }) {
   const [selectedChallenge, setSelectedChallenge] = useState(null);
   const [isAnimating, setIsAnimating] = useState(false);
+  const { t } = useI18n();
 
   const handleSpin = async () => {
+    if (loading || disabled) {
+      toast.error(t('challengesStillLoading'));
+      return;
+    }
+
     if (challenges.length === 0) {
-      toast.error('No challenges available');
+      toast.error(t('noChallengesAvailable'));
       return;
     }
 
@@ -33,8 +40,8 @@ export default function ChallengeRoulette({ challenges, onSpin, spinning, result
 
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 text-center">
-      <h2 className="text-2xl font-bold text-gray-900 mb-2">🎰 Challenge Roulette</h2>
-      <p className="text-gray-600 mb-6">Spin the wheel and get a random challenge!</p>
+      <h2 className="text-2xl font-bold text-gray-900 mb-2">🎰 {t('challengeRoulette')}</h2>
+      <p className="text-gray-600 mb-6">{t('challengeRouletteSubtitle')}</p>
 
       <div className="relative w-48 h-48 mx-auto mb-6">
         <div className="absolute inset-0 bg-gradient-to-br from-primary-400 to-primary-600 rounded-full flex items-center justify-center shadow-lg">
@@ -44,7 +51,7 @@ export default function ChallengeRoulette({ challenges, onSpin, spinning, result
 
       {displayChallenge && !spinning && !isAnimating && (
         <div className="mb-6 p-4 bg-amber-50 rounded-xl border border-amber-200">
-          <p className="text-sm font-medium text-amber-800 mb-1">Your Challenge:</p>
+          <p className="text-sm font-medium text-amber-800 mb-1">{t('yourChallenge')}</p>
           <h3 className="text-lg font-bold text-gray-900">{displayChallenge.title}</h3>
           <p className="text-sm text-gray-600 mt-1">{displayChallenge.description}</p>
           <div className="flex items-center justify-center gap-3 mt-3">
@@ -60,10 +67,10 @@ export default function ChallengeRoulette({ challenges, onSpin, spinning, result
 
       <button
         onClick={handleSpin}
-        disabled={spinning || isAnimating}
+        disabled={spinning || isAnimating || loading || disabled}
         className="px-8 py-3 bg-primary-500 hover:bg-primary-600 disabled:bg-primary-400 text-white font-semibold rounded-xl transition-all hover:shadow-lg disabled:opacity-50"
       >
-        {spinning || isAnimating ? 'Spinning...' : 'Spin for Challenge'}
+        {loading ? t('loadingChallenges') : spinning || isAnimating ? t('spinning') : t('spinForChallenge')}
       </button>
     </div>
   );

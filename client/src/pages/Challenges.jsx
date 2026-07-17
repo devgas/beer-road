@@ -1,18 +1,22 @@
 import { useState, useEffect } from 'react';
 import ChallengeCard from '../components/ChallengeCard';
 import ChallengeRoulette from '../components/ChallengeRoulette';
+import ChallengeCompletionModal from '../components/ChallengeCompletionModal';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
+import { useI18n } from '../context/I18nContext';
 
 export default function Challenges() {
   const [challenges, setChallenges] = useState([]);
   const [myChallenges, setMyChallenges] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [spinning, setSpinning] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [resultChallenge, setResultChallenge] = useState(null);
   const { user } = useAuth();
+  const { t } = useI18n();
 
   useEffect(() => {
     fetchChallenges();
@@ -20,15 +24,20 @@ export default function Challenges() {
   }, [user, selectedCategory]);
 
   const fetchChallenges = async () => {
+    setLoading(true);
+    setError(null);
     try {
       const url = selectedCategory ? `/api/challenges?category=${selectedCategory}` : '/api/challenges';
       const res = await fetch(url);
+      if (!res.ok) throw new Error('Failed to load challenges');
       if (res.ok) {
         const data = await res.json();
         setChallenges(data.data || []);
       }
     } catch (e) {
       console.error('Failed to fetch challenges:', e);
+      setChallenges([]);
+      setError(t('challengesLoadError'));
     } finally {
       setLoading(false);
     }
@@ -36,7 +45,7 @@ export default function Challenges() {
 
   const fetchMyChallenges = async () => {
     try {
-      const { data } = await api.get('/api/challenges/my-challenges');
+      const { data } = await api.get('/challenges/my-challenges');
       setMyChallenges(data.data || []);
     } catch (e) {
       console.error('Failed to fetch my challenges:', e);
@@ -45,7 +54,7 @@ export default function Challenges() {
 
   const handleAccept = async (challengeId) => {
     try {
-      await api.post(`/api/challenges/${challengeId}/accept`);
+      await api.post(`/challenges/${challengeId}/accept`);
       toast.success('Challenge accepted! 🎉');
       fetchMyChallenges();
     } catch (err) {
@@ -57,7 +66,7 @@ export default function Challenges() {
     setSpinning(true);
     setResultChallenge(null);
     try {
-      const { data } = await api.get('/api/challenges/random');
+      const { data } = await api.get('/challenges/random');
       setResultChallenge(data.challenge);
       setSpinning(false);
       await handleAccept(data.challenge.id);
@@ -72,8 +81,8 @@ export default function Challenges() {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Challenges</h1>
-        <p className="mt-1 text-gray-600">Spin the roulette and complete challenges to earn points</p>
+        <h1 className="text-3xl font-bold text-gray-900">{t('challenges')}</h1>
+        <p className="mt-1 text-gray-600">{t('challengesSubtitle')}</p>
       </div>
 
       {/* Roulette Section */}
@@ -83,13 +92,21 @@ export default function Challenges() {
           onSpin={handleSpin}
           spinning={spinning}
           resultChallenge={resultChallenge}
+          loading={loading}
+          disabled={Boolean(error)}
         />
       </div>
+
+      {error && (
+        <div className="mb-8 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700">
+          {error}
+        </div>
+      )}
 
       {/* My Challenges */}
       {myChallenges.length > 0 && (
         <div className="mb-12">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">My Challenges</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">{t('myChallenges')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {myChallenges.map((uc) => (
               <div key={uc.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
@@ -117,13 +134,13 @@ export default function Challenges() {
       {/* All Challenges */}
       <div>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">All Challenges</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('allChallenges')}</h2>
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 text-sm"
           >
-            <option value="">All Categories</option>
+            <option value="">{t('allCategories')}</option>
             {categories.map((cat) => (
               <option key={cat} value={cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
             ))}
@@ -152,9 +169,9 @@ export default function Challenges() {
             {challenges.length === 0 && (
               <div className="col-span-full text-center py-20 bg-white rounded-2xl border border-gray-100">
                 <div className="text-7xl mb-4">🎯</div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">No challenges yet</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noChallengesYet')}</h3>
                 <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                  Challenges are being loaded. Check back soon for new brewery challenges!
+                  {t('noChallengesHint')}
                 </p>
               </div>
             )}
@@ -175,10 +192,11 @@ export default function Challenges() {
 
 function CompleteChallengeButton({ userChallenge, onComplete }) {
   const [showModal, setShowModal] = useState(false);
+  const { t } = useI18n();
 
   const handleSubmit = async ({ proof_image_url, review }) => {
     try {
-      await api.post(`/api/challenges/${userChallenge.challenge_id}/complete`, {
+      await api.post(`/challenges/${userChallenge.challenge_id}/complete`, {
         proof_image_url,
         review,
         brewery_id: review?.brewery_id,
@@ -197,7 +215,7 @@ function CompleteChallengeButton({ userChallenge, onComplete }) {
         onClick={() => setShowModal(true)}
         className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-sm font-medium rounded-lg transition-colors"
       >
-        Complete
+        {t('complete')}
       </button>
       {showModal && (
         <ChallengeCompletionModal

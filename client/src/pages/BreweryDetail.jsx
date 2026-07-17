@@ -5,22 +5,7 @@ import ReviewStars from '../components/ReviewStars';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import api from '../utils/api';
-
-const BREWERY_IMAGES = [
-  '1535958636474', '1535958636475', '1535958636476', '1535958636477', '1535958636478',
-  '1535958636479', '1535958636480', '1535958636481', '1535958636482', '1535958636483',
-  '1535958636484', '1535958636485', '1535958636486', '1535958636487', '1535958636488',
-  '1535958636489', '1535958636490', '1535958636491', '1535958636492', '1535958636493',
-];
-
-function getBreweryImageId(breweryId) {
-  let hash = 0;
-  const str = String(breweryId);
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return BREWERY_IMAGES[Math.abs(hash) % BREWERY_IMAGES.length];
-}
+import { breweryImageUrl } from '../utils/media';
 
 export default function BreweryDetail() {
   const { id } = useParams();
@@ -37,7 +22,6 @@ export default function BreweryDetail() {
   const [submittingReview, setSubmittingReview] = useState(false);
   const [imgError, setImgError] = useState(false);
   const { user } = useAuth();
-  const imageId = brewery ? getBreweryImageId(brewery.id) : '1535958636474';
 
   useEffect(() => {
     const fetchBrewery = async () => {
@@ -79,15 +63,15 @@ export default function BreweryDetail() {
   useEffect(() => {
     const checkFavorite = async () => {
       try {
-        const res = await api.get(`/api/favorites/${id}`);
-        setIsFavorite(res.ok);
+        const { data } = await api.get('/favorites');
+        setIsFavorite((data.data || []).some((favorite) => String(favorite.id) === String(id)));
       } catch (e) {
         setIsFavorite(false);
       }
     };
     const fetchUserTrips = async () => {
       try {
-        const { data } = await api.get('/api/trips');
+        const { data } = await api.get('/trips');
         setUserTrips(data.data || []);
       } catch (e) {
         console.error('Failed to fetch trips:', e);
@@ -107,11 +91,11 @@ export default function BreweryDetail() {
     setFavoriteLoading(true);
     try {
       if (isFavorite) {
-        await api.delete(`/api/favorites/${id}`);
+        await api.delete(`/favorites/${id}`);
         setIsFavorite(false);
         toast.success('Removed from favorites');
       } else {
-        await api.post(`/api/favorites/${id}`);
+        await api.post(`/favorites/${id}`);
         setIsFavorite(true);
         toast.success('Added to favorites');
       }
@@ -124,13 +108,8 @@ export default function BreweryDetail() {
 
   const handleAddToTrip = async (tripId) => {
     try {
-      await api.post(`/api/trips/${tripId}/stops`, {
-        breweryId: id,
-        name: brewery.name,
-        city: brewery.city,
-        state: brewery.state,
-        latitude: brewery.latitude,
-        longitude: brewery.longitude,
+      await api.post(`/trips/${tripId}/stops`, {
+        brewery_id: id,
       });
       toast.success('Brewery added to trip!');
       setShowTripDropdown(false);
@@ -144,14 +123,14 @@ export default function BreweryDetail() {
     if (submittingReview) return;
     setSubmittingReview(true);
     try {
-      await api.post('/api/reviews', {
-        breweryId: id,
+      await api.post('/reviews', {
+        brewery_id: id,
         rating: reviewForm.rating,
         comment: reviewForm.comment,
       });
       toast.success('Review submitted!');
       setReviewForm({ rating: 5, comment: '' });
-      const { data } = await api.get(`/api/reviews/brewery/${id}`);
+      const { data } = await api.get(`/reviews/brewery/${id}`);
       setReviews(data.data || []);
     } catch (err) {
       toast.error(err.response?.data?.error || err.message || 'Failed to submit review');
@@ -204,8 +183,8 @@ export default function BreweryDetail() {
   }
 
   const avgRating = reviews.length > 0
-    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length).toFixed(1)
-    : (brewery.rating || 'N/A');
+    ? reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / reviews.length
+    : Number(brewery.rating || 0);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 animate-fade-in">
@@ -221,7 +200,7 @@ export default function BreweryDetail() {
         <div className="relative h-72 md:h-80 bg-gray-100 flex items-center justify-center">
           {!imgError ? (
             <img
-              src={`https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`}
+              src={breweryImageUrl(brewery)}
               alt={brewery.name}
               loading="lazy"
               onError={() => setImgError(true)}
@@ -255,7 +234,7 @@ export default function BreweryDetail() {
               </p>
             </div>
             <div className="flex items-center gap-2 bg-amber-50 px-4 py-2 rounded-xl">
-              <ReviewStars rating={typeof avgRating === 'number' ? avgRating : 0} />
+              <ReviewStars rating={avgRating} />
               <span className="text-sm text-gray-600 font-medium">({reviews.length} reviews)</span>
             </div>
           </div>
@@ -322,12 +301,12 @@ export default function BreweryDetail() {
             )}
           </div>
 
-          {brewery.latitude && brewery.longitude && (
+          {brewery.lat && brewery.lng && (
             <div className="mb-8">
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Location</h2>
               <Map
                 breweries={[brewery]}
-                center={[brewery.latitude, brewery.longitude]}
+                center={[brewery.lat, brewery.lng]}
                 zoom={15}
                 selectedBrewery={brewery}
                 height="400px"
@@ -362,15 +341,15 @@ export default function BreweryDetail() {
                 <div key={review.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5 hover:shadow-md transition-shadow">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="w-10 h-10 bg-primary-500 text-white rounded-full flex items-center justify-center text-sm font-bold">
-                      {(review.userName || review.user?.name || 'U')[0].toUpperCase()}
+                      {(review.author_name || review.userName || review.user?.name || 'U')[0].toUpperCase()}
                     </div>
                     <div>
-                      <p className="font-semibold text-gray-900 text-sm">{review.userName || review.user?.name || 'User'}</p>
+                      <p className="font-semibold text-gray-900 text-sm">{review.author_name || review.userName || review.user?.name || 'User'}</p>
                       <ReviewStars rating={review.rating} />
                     </div>
                   </div>
                   {review.comment && <p className="text-gray-700 text-sm mt-2 leading-relaxed">{review.comment}</p>}
-                  <p className="text-xs text-gray-400 mt-3">{new Date(review.createdAt).toLocaleDateString()}</p>
+                  <p className="text-xs text-gray-400 mt-3">{new Date(review.created_at || review.createdAt).toLocaleDateString()}</p>
                 </div>
               ))}
             </div>
@@ -427,7 +406,7 @@ function BeersSection({ breweryId }) {
   useEffect(() => {
     const fetchBeers = async () => {
       try {
-        const res = await fetch(`/api/beers/brewery/${breweryId}`);
+        const res = await fetch(`/api/beers?brewery_id=${encodeURIComponent(breweryId)}`);
         if (res.ok) {
           const data = await res.json();
           setBeers(data.data || []);

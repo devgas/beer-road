@@ -191,14 +191,70 @@ router.post('/:id/stops', async (req, res, next) => {
 });
 
 /**
+ * PUT /api/trips/:id/stops/reorder
+ * Body: { stops: [stopId1, stopId2, ...] }
+ * Updates stop_order for each stop based on the array position.
+ */
+router.put('/:id/stops/reorder', async (req, res, next) => {
+  try {
+    const trip = await db
+      .prepare('SELECT id FROM trips WHERE id = ? AND user_id = ?')
+      .get(req.params.id, req.user.id);
+    if (!trip) {
+      const err = new Error('Trip not found');
+      err.status = 404;
+      throw err;
+    }
+
+    const { stops } = req.body;
+    if (!Array.isArray(stops)) {
+      const err = new Error('stops must be an array of stop IDs');
+      err.status = 400;
+      throw err;
+    }
+
+    if (stops.length === 0) {
+      return res.json({ success: true });
+    }
+
+    const validStops = await db
+      .prepare(`SELECT id FROM trip_stops WHERE trip_id = ? AND id IN (${stops.map(() => '?').join(',')})`)
+      .all(req.params.id, ...stops);
+
+    if (validStops.length !== stops.length) {
+      const err = new Error('One or more stops do not belong to this trip');
+      err.status = 400;
+      throw err;
+    }
+
+    const updateStmt = db.prepare(
+      'UPDATE trip_stops SET stop_order = ? WHERE id = ? AND trip_id = ?'
+    );
+
+    for (let i = 0; i < stops.length; i++) {
+      await updateStmt.run(i, stops[i], req.params.id);
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
+/**
  * PUT /api/trips/:id/stops/:stopId
  * Update notes, visited_at, or reorder via stop_order.
  */
 router.put('/:id/stops/:stopId', async (req, res, next) => {
   try {
     const stop = await db
-      .prepare('SELECT * FROM trip_stops WHERE id = ? AND trip_id = ?')
-      .get(req.params.stopId, req.params.id);
+      .prepare(
+        `SELECT ts.*
+         FROM trip_stops ts
+         JOIN trips t ON t.id = ts.trip_id
+         WHERE ts.id = ? AND ts.trip_id = ? AND t.user_id = ?`
+      )
+      .get(req.params.stopId, req.params.id, req.user.id);
     if (!stop) {
       const err = new Error('Stop not found');
       err.status = 404;
@@ -231,27 +287,6 @@ router.put('/:id/stops/:stopId', async (req, res, next) => {
  */
 router.delete('/:id/stops/:stopId', async (req, res, next) => {
   try {
-    const info = await db
-      .prepare('DELETE FROM trip_stops WHERE id = ? AND trip_id = ?')
-      .run(req.params.stopId, req.params.id);
-    if (info.changes === 0) {
-      const err = new Error('Stop not found');
-      err.status = 404;
-      throw err;
-    }
-    res.json({ success: true });
-  } catch (err) {
-    next(err);
-  }
-});
-
-/**
- * PUT /api/trips/:id/stops/reorder
- * Body: { stops: [stopId1, stopId2, ...] }
- * Updates stop_order for each stop based on the array position.
- */
-router.put('/:id/stops/reorder', async (req, res, next) => {
-  try {
     const trip = await db
       .prepare('SELECT id FROM trips WHERE id = ? AND user_id = ?')
       .get(req.params.id, req.user.id);
@@ -261,21 +296,14 @@ router.put('/:id/stops/reorder', async (req, res, next) => {
       throw err;
     }
 
-    const { stops } = req.body;
-    if (!Array.isArray(stops)) {
-      const err = new Error('stops must be an array of stop IDs');
-      err.status = 400;
+    const info = await db
+      .prepare('DELETE FROM trip_stops WHERE id = ? AND trip_id = ?')
+      .run(req.params.stopId, req.params.id);
+    if (info.changes === 0) {
+      const err = new Error('Stop not found');
+      err.status = 404;
       throw err;
     }
-
-    const updateStmt = db.prepare(
-      'UPDATE trip_stops SET stop_order = ? WHERE id = ? AND trip_id = ?'
-    );
-
-    for (let i = 0; i < stops.length; i++) {
-      await updateStmt.run(i, stops[i], req.params.id);
-    }
-
     res.json({ success: true });
   } catch (err) {
     next(err);

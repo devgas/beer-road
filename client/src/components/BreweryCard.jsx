@@ -1,27 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-
-const BREWERY_IMAGES = [
-  '1535958636474', '1535958636475', '1535958636476', '1535958636477', '1535958636478',
-  '1535958636479', '1535958636480', '1535958636481', '1535958636482', '1535958636483',
-  '1535958636484', '1535958636485', '1535958636486', '1535958636487', '1535958636488',
-  '1535958636489', '1535958636490', '1535958636491', '1535958636492', '1535958636493',
-];
-
-function getBreweryImageId(breweryId) {
-  let hash = 0;
-  const str = String(breweryId);
-  for (let i = 0; i < str.length; i++) {
-    hash = str.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return BREWERY_IMAGES[Math.abs(hash) % BREWERY_IMAGES.length];
-}
+import { breweryImageUrl } from '../utils/media';
 
 export default function BreweryCard({ brewery }) {
   const [imgError, setImgError] = useState(false);
   const ratingValue = typeof brewery.rating === 'number' ? brewery.rating : parseFloat(brewery.rating) || 0;
-  const imageId = useMemo(() => getBreweryImageId(brewery.id), [brewery.id]);
-  const imageUrl = `https://images.unsplash.com/photo-${imageId}?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80`;
+  const imageUrl = breweryImageUrl(brewery);
 
   return (
     <Link

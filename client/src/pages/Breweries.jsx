@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import BreweryCard from '../components/BreweryCard';
 import { COUNTRIES } from '../utils/constants';
+import { useI18n } from '../context/I18nContext';
 
 export default function Breweries() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -14,6 +15,7 @@ export default function Breweries() {
   const [types, setTypes] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const { t } = useI18n();
 
   const searchQuery = searchParams.get('q') || '';
   const cityFilter = searchParams.get('city') || '';
@@ -100,35 +102,35 @@ export default function Breweries() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900">Breweries</h1>
         <p className="mt-1 text-gray-600">
-          {resultCount > 0 ? `Found ${resultCount} brewery${resultCount !== 1 ? 'ies' : ''}` : 'Discover craft breweries near you'}
+          {resultCount > 0 ? t('foundBreweries', { count: resultCount, label: resultCount !== 1 ? t('breweries') : t('breweries') }) : t('discoverNearYou')}
         </p>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-8">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">Filters</h2>
+          <h2 className="text-sm font-semibold text-gray-900 uppercase tracking-wider">{t('filters')}</h2>
           {activeFiltersCount > 0 && (
             <button
               onClick={clearFilters}
               className="text-sm text-primary-600 hover:text-primary-700 font-medium"
             >
-              Clear all ({activeFiltersCount})
+              {t('clearAll')} ({activeFiltersCount})
             </button>
           )}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4">
           <div className="lg:col-span-2">
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Search</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">{t('search')}</label>
             <input
               type="text"
-              placeholder="Search by name, city, or state..."
-              defaultValue={searchQuery}
+              placeholder={t('searchBreweriesPlaceholder')}
+              value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Country</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">{t('country')}</label>
             <select
               value={countryFilter}
               onChange={(e) => updateFilter('country', e.target.value)}
@@ -140,39 +142,39 @@ export default function Breweries() {
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">City</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">{t('city')}</label>
             <select
               value={cityFilter}
               onChange={(e) => updateFilter('city', e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm bg-white"
             >
-              <option value="">All Cities</option>
+              <option value="">{t('allCities')}</option>
               {cities.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">State</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">{t('state')}</label>
             <select
               value={stateFilter}
               onChange={(e) => updateFilter('state', e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm bg-white"
             >
-              <option value="">All States</option>
+              <option value="">{t('allStates')}</option>
               {states.map((s) => (
                 <option key={s} value={s}>{s}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-500 mb-1.5">Type</label>
+            <label className="block text-xs font-medium text-gray-500 mb-1.5">{t('type')}</label>
             <select
               value={typeFilter}
               onChange={(e) => updateFilter('type', e.target.value)}
               className="w-full px-3 py-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm bg-white"
             >
-              <option value="">All Types</option>
+              <option value="">{t('allTypes')}</option>
               {types.map((t) => (
                 <option key={t} value={t}>{t}</option>
               ))}
@@ -214,15 +216,15 @@ export default function Breweries() {
           {breweries.length === 0 ? (
             <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
               <div className="text-7xl mb-4">🍺</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">No breweries found</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">{t('noBreweriesFound')}</h3>
               <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                We couldn't find any breweries matching your criteria. Try adjusting your filters or search terms.
+                {t('noBreweriesHint')}
               </p>
               <button
                 onClick={clearFilters}
                 className="inline-flex items-center gap-2 px-6 py-3 bg-primary-500 hover:bg-primary-600 text-white font-medium rounded-xl transition-all hover:shadow-lg"
               >
-                Clear all filters
+                {t('clearAllFilters')}
               </button>
             </div>
           ) : (

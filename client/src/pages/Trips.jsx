@@ -15,10 +15,10 @@ export default function Trips() {
       setLoading(true);
       setError(null);
       try {
-        const { data } = await api.get('/api/trips');
+        const { data } = await api.get('/trips');
         setTrips(data.data || []);
       } catch (err) {
-        setError(err.message);
+        setError(err.response?.data?.message || err.message);
       } finally {
         setLoading(false);
       }

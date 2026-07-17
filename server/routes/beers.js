@@ -37,17 +37,12 @@ router.get('/', async (req, res, next) => {
 });
 
 /**
- * GET /api/beers/:id
+ * GET /api/beers/styles
  */
-router.get('/:id', async (req, res, next) => {
+router.get('/meta/styles', async (req, res, next) => {
   try {
-    const beer = await db.prepare('SELECT * FROM beers WHERE id = ?').get(req.params.id);
-    if (!beer) {
-      const err = new Error('Beer not found');
-      err.status = 404;
-      throw err;
-    }
-    res.json({ beer });
+    const styles = await db.prepare('SELECT DISTINCT style FROM beers WHERE style IS NOT NULL ORDER BY style ASC').all();
+    res.json(styles.map((s) => s.style));
   } catch (err) {
     next(err);
   }
@@ -67,12 +62,17 @@ router.get('/brewery/:breweryId', async (req, res, next) => {
 });
 
 /**
- * GET /api/beers/styles
+ * GET /api/beers/:id
  */
-router.get('/meta/styles', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
   try {
-    const styles = await db.prepare('SELECT DISTINCT style FROM beers WHERE style IS NOT NULL ORDER BY style ASC').all();
-    res.json(styles.map((s) => s.style));
+    const beer = await db.prepare('SELECT * FROM beers WHERE id = ?').get(req.params.id);
+    if (!beer) {
+      const err = new Error('Beer not found');
+      err.status = 404;
+      throw err;
+    }
+    res.json({ beer });
   } catch (err) {
     next(err);
   }
