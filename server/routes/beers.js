@@ -161,4 +161,23 @@ router.put('/:id', auth, async (req, res, next) => {
   }
 });
 
+/**
+ * DELETE /api/beers/:id
+ * Protected: remove a beer.
+ */
+router.delete('/:id', auth, async (req, res, next) => {
+  try {
+    const existing = await db.prepare('SELECT id FROM beers WHERE id = ?').get(req.params.id);
+    if (!existing) {
+      const err = new Error('Beer not found');
+      err.status = 404;
+      throw err;
+    }
+    await db.prepare('DELETE FROM beers WHERE id = ?').run(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    next(err);
+  }
+});
+
 module.exports = router;
