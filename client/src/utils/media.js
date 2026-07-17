@@ -1,34 +1,37 @@
 const BREWERY_IMAGES = [
-  'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1559526324-593bc073d938?auto=format&fit=crop&w=900&q=80',
-  'https://images.unsplash.com/photo-1612528443702-f6741f70a049?auto=format&fit=crop&w=900&q=80',
+  '/images/brewery-01.jpg',
+  '/images/brewery-02.jpg',
+  '/images/brewery-03.jpg',
+  '/images/brewery-04.jpg',
+  '/images/brewery-05.jpg',
+  '/images/brewery-06.jpg',
+  '/images/brewery-07.jpg',
+  '/images/brewery-08.jpg',
 ];
 
 const TYPE_IMAGES = {
-  farmhouse: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80',
-  regional: 'https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=900&q=80',
-  sour: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=900&q=80',
+  farmhouse: '/images/brewery-08.jpg',
+  regional: '/images/brewery-02.jpg',
+  sour: '/images/brewery-03.jpg',
+  micro: '/images/brewery-04.jpg',
 };
 
 const BEER_STYLE_IMAGES = {
-  ipa: 'https://images.unsplash.com/photo-1608270586620-248524c67de9?auto=format&fit=crop&w=900&q=80',
-  stout: 'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?auto=format&fit=crop&w=900&q=80',
-  porter: 'https://images.unsplash.com/photo-1571613316887-6f8d5cbf7ef7?auto=format&fit=crop&w=900&q=80',
-  pilsner: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80',
-  lager: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=900&q=80',
-  saison: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=900&q=80',
-  farmhouse: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=900&q=80',
-  sour: 'https://images.unsplash.com/photo-1566633806327-68e152aaf26d?auto=format&fit=crop&w=900&q=80',
+  ipa: '/images/beer-ipa.jpg',
+  stout: '/images/beer-stout.jpg',
+  porter: '/images/beer-porter.jpg',
+  pilsner: '/images/beer-pilsner.jpg',
+  lager: '/images/beer-lager.jpg',
+  saison: '/images/beer-saison.jpg',
+  farmhouse: '/images/beer-farmhouse.jpg',
+  sour: '/images/beer-sour.jpg',
 };
 
 const CHALLENGE_IMAGES = {
-  beginner: 'https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=700&q=80',
-  style: 'https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?auto=format&fit=crop&w=700&q=80',
-  social: 'https://images.unsplash.com/photo-1529511582893-2d7e684dd128?auto=format&fit=crop&w=700&q=80',
-  travel: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=700&q=80',
+  beginner: '/images/challenge-beginner.jpg',
+  style: '/images/challenge-style.jpg',
+  social: '/images/challenge-social.jpg',
+  travel: '/images/challenge-travel.jpg',
 };
 
 function stableIndex(value, length) {

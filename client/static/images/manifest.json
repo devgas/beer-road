@@ -1,0 +1,122 @@
+[
+  {
+    "target": "brewery-01.jpg",
+    "source": "File:Pilsner-Urquell-Main-Gate.jpg",
+    "license": "CC BY-SA 3.0",
+    "bytes": 206353
+  },
+  {
+    "target": "brewery-02.jpg",
+    "source": "File:Budweiser Budvar brewery, 01.jpg",
+    "license": "CC BY-SA 4.0",
+    "bytes": 178048
+  },
+  {
+    "target": "brewery-03.jpg",
+    "source": "File:Starac-budova.jpg",
+    "license": "CC BY 3.0",
+    "bytes": 158748
+  },
+  {
+    "target": "brewery-04.jpg",
+    "source": "File:Velkopopovicky Kozel Brewery.jpg",
+    "license": "CC BY-SA 3.0",
+    "bytes": 64962
+  },
+  {
+    "target": "brewery-05.jpg",
+    "source": "File:Krusovice pivovar 2635.jpg",
+    "license": "CC BY 2.5",
+    "bytes": 175325
+  },
+  {
+    "target": "brewery-06.jpg",
+    "source": "File:Pivovar Radegast.JPG",
+    "license": "CC BY-SA 3.0",
+    "bytes": 127807
+  },
+  {
+    "target": "brewery-07.jpg",
+    "source": "File:Brewery Starobrno 2.jpg",
+    "license": "CC BY-SA 3.0",
+    "bytes": 169273
+  },
+  {
+    "target": "brewery-08.jpg",
+    "source": "File:Gordon Biersch brewery, SJ exterior 3.JPG",
+    "license": "CC BY-SA 3.0",
+    "bytes": 130989
+  },
+  {
+    "target": "beer-ipa.jpg",
+    "source": "File:Fuller's India pale ale.jpg",
+    "license": "CC BY-SA 3.0",
+    "bytes": 294795
+  },
+  {
+    "target": "beer-stout.jpg",
+    "source": "File:Efes stout.jpg",
+    "license": "CC BY-SA 2.0",
+    "bytes": 148337
+  },
+  {
+    "target": "beer-porter.jpg",
+    "source": "File:Porter Stout.jpg",
+    "license": "Public domain",
+    "bytes": 66533
+  },
+  {
+    "target": "beer-pilsner.jpg",
+    "source": "File:Beer wuerzburger hofbraue v.jpg",
+    "license": "CC BY-SA 3.0",
+    "bytes": 110273
+  },
+  {
+    "target": "beer-lager.jpg",
+    "source": "File:Lager beer in glass.jpg",
+    "license": "Public domain",
+    "bytes": 221340
+  },
+  {
+    "target": "beer-saison.jpg",
+    "source": "File:Nogne o saison.jpg",
+    "license": "CC BY-SA 4.0",
+    "bytes": 36883
+  },
+  {
+    "target": "beer-sour.jpg",
+    "source": "File:Ruosniemi Brewery Kolaremmi.jpg",
+    "license": "CC BY-SA 4.0",
+    "bytes": 131323
+  },
+  {
+    "target": "challenge-beginner.jpg",
+    "source": "File:Yebisu Beer Museum tasting set.JPG",
+    "license": "Public domain",
+    "bytes": 80164
+  },
+  {
+    "target": "challenge-style.jpg",
+    "source": "File:Story Bridge Hotel 06.JPG",
+    "license": "CC BY-SA 4.0",
+    "bytes": 113097
+  },
+  {
+    "target": "challenge-social.jpg",
+    "source": "File:Biograph poster2.jpg",
+    "license": "Public domain",
+    "bytes": 349656
+  },
+  {
+    "target": "challenge-travel.jpg",
+    "source": "File:Pub interior - geograph.org.uk - 555584.jpg",
+    "license": "CC BY-SA 2.0",
+    "bytes": 46518
+  },
+  {
+    "target": "challenge-barrel.jpg",
+    "source": "File:Beer Barrels - geograph.org.uk - 725804.jpg",
+    "license": "CC BY-SA 2.0",
+    "bytes": 233106
+  }
+]

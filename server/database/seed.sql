@@ -48,55 +48,55 @@ INSERT INTO breweries (id, name, address, city, state, country, lat, lng, websit
 (40, 'Matuška Brewery', 'Horka 1', 'Horka nad Moravou', 'Olomouc Region', 'Czech Republic', 49.6333, 17.1500, 'https://www.matuska.cz', '+420 583 311 111', 'Small craft brewery in Olomouc known for hop-forward Czech ales and experimental barrel-aged releases.', 'Micro');
 
 INSERT INTO beers (id, brewery_id, name, style, abv, ibu, description, image_url) VALUES
-(1, 1, 'Fresh Squeezed IPA', 'IPA', 6.5, 65, 'Piney, citrusy IPA with a smooth malt backbone and a lingering dry-hop finish.', 'https://source.unsplash.com/800x600/?ipa,craft-beer'),
-(2, 1, 'Black Butte Porter', 'Porter', 5.5, 40, 'Rich chocolate and coffee notes with a hint of dark fruit and a creamy mouthfeel.', 'https://source.unsplash.com/800x600/?porter,dark-beer'),
-(3, 5, 'Yeti Imperial Stout', 'Stout', 9.5, 60, 'Massive dark stout with roasty malt, chocolate, and a warming alcohol presence.', 'https://source.unsplash.com/800x600/?stout,beer-glass'),
-(4, 5, 'Colette Saison', 'Saison', 7.2, 25, 'Farmhouse saison with peppery yeast, citrus peel, and a dry, crisp finish.', 'https://source.unsplash.com/800x600/?saison,craft-beer'),
-(5, 9, 'Stone IPA', 'IPA', 6.9, 70, 'Aggressively hopped west coast IPA with pine, resin, and tropical fruit aromatics.', 'https://source.unsplash.com/800x600/?west-coast-ipa,beer'),
-(6, 16, 'All Day IPA', 'IPA', 4.7, 50, 'Session IPA that delivers bold hop flavor without the heavy alcohol burden.', 'https://source.unsplash.com/800x600/?pale-ale,craft-beer'),
-(7, 16, 'Breakfast Stout', 'Stout', 8.3, 60, 'Oatmeal stout brewed with coffee and chocolate for a rich breakfast-in-a-glass experience.', 'https://source.unsplash.com/800x600/?stout,coffee-beer'),
-(8, 20, 'Abner', 'Farmhouse Ale', 6.5, 30, 'Dry-hopped farmhouse ale with wild fermentation character and a hazy golden hue.', 'https://source.unsplash.com/800x600/?farmhouse-ale,beer'),
-(9, 33, 'Pilsner Urquell', 'Pilsner', 4.4, 35, 'The original pilsner. Crisp, golden lager with Saaz hop bitterness and a bready malt body.', 'https://source.unsplash.com/800x600/?pilsner,lager'),
-(10, 34, 'Budvar Czechvar', 'Lager', 5.0, 35, 'Smooth, balanced Czech lager with dual-hopping for a refined bitter finish.', 'https://source.unsplash.com/800x600/?czech-lager,beer'),
-(11, 25, 'Lvivske 1715', 'Lager', 4.8, 28, 'Classic Ukrainian lager with a light golden color, gentle hop bitterness, and a clean finish.', 'https://source.unsplash.com/800x600/?golden-lager,beer'),
-(12, 26, 'Obolon Premium', 'Lager', 5.2, 32, 'Ukraine''s flagship lager. Light, refreshing, and easy-drinking with subtle malt sweetness.', 'https://source.unsplash.com/800x600/?lager,beer-bottle');
+(1, 1, 'Fresh Squeezed IPA', 'IPA', 6.5, 65, 'Piney, citrusy IPA with a smooth malt backbone and a lingering dry-hop finish.', '/images/beer-ipa.jpg'),
+(2, 1, 'Black Butte Porter', 'Porter', 5.5, 40, 'Rich chocolate and coffee notes with a hint of dark fruit and a creamy mouthfeel.', '/images/beer-porter.jpg'),
+(3, 5, 'Yeti Imperial Stout', 'Stout', 9.5, 60, 'Massive dark stout with roasty malt, chocolate, and a warming alcohol presence.', '/images/beer-stout.jpg'),
+(4, 5, 'Colette Saison', 'Saison', 7.2, 25, 'Farmhouse saison with peppery yeast, citrus peel, and a dry, crisp finish.', '/images/beer-saison.jpg'),
+(5, 9, 'Stone IPA', 'IPA', 6.9, 70, 'Aggressively hopped west coast IPA with pine, resin, and tropical fruit aromatics.', '/images/beer-ipa.jpg'),
+(6, 16, 'All Day IPA', 'IPA', 4.7, 50, 'Session IPA that delivers bold hop flavor without the heavy alcohol burden.', '/images/beer-ipa.jpg'),
+(7, 16, 'Breakfast Stout', 'Stout', 8.3, 60, 'Oatmeal stout brewed with coffee and chocolate for a rich breakfast-in-a-glass experience.', '/images/beer-stout.jpg'),
+(8, 20, 'Abner', 'Farmhouse Ale', 6.5, 30, 'Dry-hopped farmhouse ale with wild fermentation character and a hazy golden hue.', '/images/beer-farmhouse.jpg'),
+(9, 33, 'Pilsner Urquell', 'Pilsner', 4.4, 35, 'The original pilsner. Crisp, golden lager with Saaz hop bitterness and a bready malt body.', '/images/beer-pilsner.jpg'),
+(10, 34, 'Budvar Czechvar', 'Lager', 5.0, 35, 'Smooth, balanced Czech lager with dual-hopping for a refined bitter finish.', '/images/beer-lager.jpg'),
+(11, 25, 'Lvivske 1715', 'Lager', 4.8, 28, 'Classic Ukrainian lager with a light golden color, gentle hop bitterness, and a clean finish.', '/images/beer-lager.jpg'),
+(12, 26, 'Obolon Premium', 'Lager', 5.2, 32, 'Ukraine''s flagship lager. Light, refreshing, and easy-drinking with subtle malt sweetness.', '/images/beer-lager.jpg');
 
 INSERT INTO challenges (id, title, description, difficulty, points, category, image_url) VALUES
-(1, 'First Sip', 'Visit your first brewery and try a local beer', 'easy', 10, 'beginner', 'https://source.unsplash.com/800x600/?brewery,taproom'),
-(2, 'IPA Explorer', 'Try an IPA at 3 different breweries', 'medium', 25, 'style', 'https://source.unsplash.com/800x600/?ipa,beer-flight'),
-(3, 'Stout Connoisseur', 'Find and taste a stout or porter', 'medium', 20, 'style', 'https://source.unsplash.com/800x600/?stout,porter'),
-(4, 'Saison Adventure', 'Try a farmhouse saison', 'medium', 20, 'style', 'https://source.unsplash.com/800x600/?farmhouse-ale,brewery'),
-(5, 'Pilsner Purist', 'Drink a classic Czech pilsner', 'easy', 15, 'style', 'https://source.unsplash.com/800x600/?pilsner,czech-beer'),
-(6, 'Sour Pioneer', 'Taste a sour or wild ale', 'medium', 25, 'style', 'https://source.unsplash.com/800x600/?sour-beer,craft-beer'),
-(7, 'Barrel Aged Hunter', 'Find a barrel-aged beer', 'hard', 50, 'style', 'https://source.unsplash.com/800x600/?barrel-aged-beer,barrels'),
-(8, 'Trip Planner', 'Create your first brewery road trip', 'easy', 10, 'social', 'https://source.unsplash.com/800x600/?brewery-road-trip'),
-(9, 'Social Butterfly', 'Leave a review at 5 different breweries', 'medium', 30, 'social', 'https://source.unsplash.com/800x600/?brewery-friends,beer'),
-(10, 'Beer Photographer', 'Upload a photo of your beer', 'easy', 15, 'social', 'https://source.unsplash.com/800x600/?beer-photography,craft-beer'),
-(11, 'Cross-Country Brewer', 'Visit breweries in 2 different countries', 'hard', 100, 'travel', 'https://source.unsplash.com/800x600/?brewery-travel'),
-(12, 'Local Legend', 'Visit 5 breweries in your home city', 'medium', 40, 'travel', 'https://source.unsplash.com/800x600/?local-brewery,taproom');
+(1, 'First Sip', 'Visit your first brewery and try a local beer', 'easy', 10, 'beginner', '/images/challenge-beginner.jpg'),
+(2, 'IPA Explorer', 'Try an IPA at 3 different breweries', 'medium', 25, 'style', '/images/challenge-style.jpg'),
+(3, 'Stout Connoisseur', 'Find and taste a stout or porter', 'medium', 20, 'style', '/images/challenge-style.jpg'),
+(4, 'Saison Adventure', 'Try a farmhouse saison', 'medium', 20, 'style', '/images/challenge-style.jpg'),
+(5, 'Pilsner Purist', 'Drink a classic Czech pilsner', 'easy', 15, 'style', '/images/challenge-style.jpg'),
+(6, 'Sour Pioneer', 'Taste a sour or wild ale', 'medium', 25, 'style', '/images/challenge-style.jpg'),
+(7, 'Barrel Aged Hunter', 'Find a barrel-aged beer', 'hard', 50, 'style', '/images/challenge-barrel.jpg'),
+(8, 'Trip Planner', 'Create your first brewery road trip', 'easy', 10, 'social', '/images/challenge-social.jpg'),
+(9, 'Social Butterfly', 'Leave a review at 5 different breweries', 'medium', 30, 'social', '/images/challenge-social.jpg'),
+(10, 'Beer Photographer', 'Upload a photo of your beer', 'easy', 15, 'social', '/images/challenge-social.jpg'),
+(11, 'Cross-Country Brewer', 'Visit breweries in 2 different countries', 'hard', 100, 'travel', '/images/challenge-travel.jpg'),
+(12, 'Local Legend', 'Visit 5 breweries in your home city', 'medium', 40, 'travel', '/images/challenge-travel.jpg');
 
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?ipa,craft-beer' WHERE id = 1 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?porter,dark-beer' WHERE id = 2 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?stout,beer-glass' WHERE id = 3 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?saison,craft-beer' WHERE id = 4 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?west-coast-ipa,beer' WHERE id = 5 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?pale-ale,craft-beer' WHERE id = 6 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?stout,coffee-beer' WHERE id = 7 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?farmhouse-ale,beer' WHERE id = 8 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?pilsner,lager' WHERE id = 9 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?czech-lager,beer' WHERE id = 10 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?golden-lager,beer' WHERE id = 11 AND image_url IS NULL;
-UPDATE beers SET image_url = 'https://source.unsplash.com/800x600/?lager,beer-bottle' WHERE id = 12 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-ipa.jpg' WHERE id = 1 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-porter.jpg' WHERE id = 2 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-stout.jpg' WHERE id = 3 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-saison.jpg' WHERE id = 4 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-ipa.jpg' WHERE id = 5 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-ipa.jpg' WHERE id = 6 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-stout.jpg' WHERE id = 7 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-farmhouse.jpg' WHERE id = 8 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-pilsner.jpg' WHERE id = 9 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-lager.jpg' WHERE id = 10 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-lager.jpg' WHERE id = 11 AND image_url IS NULL;
+UPDATE beers SET image_url = '/images/beer-lager.jpg' WHERE id = 12 AND image_url IS NULL;
 
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?brewery,taproom' WHERE id = 1 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?ipa,beer-flight' WHERE id = 2 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?stout,porter' WHERE id = 3 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?farmhouse-ale,brewery' WHERE id = 4 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?pilsner,czech-beer' WHERE id = 5 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?sour-beer,craft-beer' WHERE id = 6 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?barrel-aged-beer,barrels' WHERE id = 7 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?brewery-road-trip' WHERE id = 8 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?brewery-friends,beer' WHERE id = 9 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?beer-photography,craft-beer' WHERE id = 10 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?brewery-travel' WHERE id = 11 AND image_url IS NULL;
-UPDATE challenges SET image_url = 'https://source.unsplash.com/800x600/?local-brewery,taproom' WHERE id = 12 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-beginner.jpg' WHERE id = 1 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-style.jpg' WHERE id = 2 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-style.jpg' WHERE id = 3 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-style.jpg' WHERE id = 4 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-style.jpg' WHERE id = 5 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-style.jpg' WHERE id = 6 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-barrel.jpg' WHERE id = 7 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-social.jpg' WHERE id = 8 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-social.jpg' WHERE id = 9 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-social.jpg' WHERE id = 10 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-travel.jpg' WHERE id = 11 AND image_url IS NULL;
+UPDATE challenges SET image_url = '/images/challenge-travel.jpg' WHERE id = 12 AND image_url IS NULL;
