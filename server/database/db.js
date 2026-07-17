@@ -159,6 +159,26 @@ async function runSeedSql() {
 
 async function seedIfMissing() {
   await runSeedSql();
+  if (mode === 'pg') await syncSequences();
+}
+
+/**
+ * Postgres SERIAL sequences are NOT advanced by explicit-id INSERTs in the
+ * seed, so the next auto-generated id would collide with a seeded id.
+ * Reset each table's id sequence to MAX(id) + 1.
+ */
+async function syncSequences() {
+  const tables = ['users', 'breweries', 'beers', 'challenges', 'trips', 'trip_stops', 'favorites', 'reviews', 'user_challenges'];
+  for (const table of tables) {
+    try {
+      await exec(
+        `SELECT setval(pg_get_serial_sequence('${table}', 'id'), COALESCE((SELECT MAX(id) FROM ${table}), 0) + 1, false);`
+      );
+    } catch (err) {
+      // Table may not have a serial sequence; ignore.
+      console.error(`[db] syncSequences skipped ${table}:`, err.message);
+    }
+  }
 }
 
 // The `db` property is the handle routes consume (db.prepare / db.exec).
